@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 
 import '../../../main.dart';
 import '../../api/apis.dart';
-import '../auth/login_screen/login_screen.dart';
-import '../chats_screen/view/screens/home_screen.dart';
+import '../login_screen/login_screen.dart';
+import '../home_screen/home_screen.dart';
 
 //splash screen
 class SplashScreen extends StatefulWidget {
@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
         log('\nUser: ${APIs.auth.currentUser}');
         //navigate to home screen
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const ChatsScreen()));
+            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
       } else {
         //navigate to login screen
         Navigator.pushReplacement(
@@ -47,41 +47,30 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Scaffold(
       //body
-      body: Stack(
-        children: [
-          //app logo
-          Positioned(
-            top: mq.height * .15,
-            right: mq.width * .25,
-            width: mq.width * .5,
-            child: Image.asset('assets/images/icon.png'),
-          ),
+      body: Stack(children: [
+        //app logo
+        Positioned(
+          top: mq.height * .15,
+          right: mq.width * .25,
+          width: mq.width * .5,
+          child: Image.asset('images/icon.png'),
+        ),
 
-          //google login button
-          Positioned(
-            bottom: mq.height * .15,
-            width: mq.width,
-            child: const Column(
-              children: [
-                Text(
-                  'from',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 16, color: Colors.black87, letterSpacing: .5),
-                ),
-                Text(
-                  'Meta',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Color(0xff00b53c),
-                      letterSpacing: .5),
-                ),
-              ],
+        //google login button
+        Positioned(
+          bottom: mq.height * .15,
+          width: mq.width,
+          child: const Text(
+            'From\nmeta',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black87,
+              letterSpacing: .5,
             ),
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }

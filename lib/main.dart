@@ -5,9 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
-import 'package:we_chat/features/chats_screen/cubit/chats_cubit.dart';
-import 'package:we_chat/features/splash_screen/splash_screen.dart';
-
+import 'package:uct_chat/features/chat_screen/cubit/chat_screen_cubit.dart';
+import 'package:uct_chat/features/home_screen/cubit/home_screen_cubit.dart';
+import 'package:uct_chat/features/login_screen/cubit/login_screen_cubit.dart';
+import 'package:uct_chat/features/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -16,20 +17,16 @@ late Size mq;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  //enter full-screen
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  SystemChrome.setPreferredOrientations(
-    [
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ],
-  ).then(
-    (value) {
-      _initializeFirebase();
-      runApp(
-        const MyApp(),
-      );
-    },
-  );
+  //for setting orientation to portrait only
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((value) {
+    _initializeFirebase();
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -40,11 +37,17 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ChatsCubit(),
+          create: (context) => ChatScreenCubit(),
+        ),
+        BlocProvider(
+          create: (context) => HomeScreenCubit(),
+        ),
+        BlocProvider(
+          create: (context) => LoginScreenCubit(),
         ),
       ],
       child: MaterialApp(
-        title: 'We Chat',
+        title: 'UCT Chat',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
@@ -52,11 +55,10 @@ class MyApp extends StatelessWidget {
             elevation: 1,
             iconTheme: IconThemeData(color: Colors.black),
             titleTextStyle: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 19,
-            ),
-            backgroundColor: Color(0xff008069),
+                color: Colors.black,
+                fontWeight: FontWeight.normal,
+                fontSize: 19),
+            backgroundColor: Colors.white,
           ),
         ),
         home: const SplashScreen(),
@@ -68,10 +70,9 @@ class MyApp extends StatelessWidget {
 _initializeFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   var result = await FlutterNotificationChannel.registerNotificationChannel(
-    description: 'For Showing Message Notification',
-    id: 'chats',
-    importance: NotificationImportance.IMPORTANCE_HIGH,
-    name: 'Chats',
-  );
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
   log('\nNotification Channel Result: $result');
 }

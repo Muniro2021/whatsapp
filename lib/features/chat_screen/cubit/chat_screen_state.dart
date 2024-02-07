@@ -1,6 +1,9 @@
 part of 'chat_screen_cubit.dart';
 
 @immutable
-sealed class ChatScreenState {}
+abstract class ChatScreenState {}
 
-final class ChatScreenInitial extends ChatScreenState {}
+class ChatScreenInitial extends ChatScreenState {}
+class ChatShowEmoji extends ChatScreenState {}
+class ChatIsUploading extends ChatScreenState {}
+class ChatTimer extends ChatScreenState {}

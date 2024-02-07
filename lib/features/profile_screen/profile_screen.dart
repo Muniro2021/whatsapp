@@ -14,7 +14,7 @@ import '../../api/apis.dart';
 import '../../helper/dialogs.dart';
 import '../../main.dart';
 import '../../models/chat_user.dart';
-import '../auth/login_screen/login_screen.dart';
+import '../login_screen/login_screen.dart';
 
 //profile screen -- to show signed in user info
 class ProfileScreen extends StatefulWidget {
@@ -36,371 +36,175 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // for hiding keyboard
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        //app bar
-        appBar: AppBar(
-          title: const Row(
-            children: [
-              Text(
-                'Profile',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                //for showing progress dialog
-                Dialogs.showProgressBar(context);
+          //app bar
+          appBar: AppBar(title: const Text('Profile Screen')),
 
-                await APIs.updateActiveStatus(false);
+          //floating button to log out
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: FloatingActionButton.extended(
+                backgroundColor: Colors.redAccent,
+                onPressed: () async {
+                  //for showing progress dialog
+                  Dialogs.showProgressBar(context);
 
-                //sign out from app
-                await APIs.auth.signOut().then((value) async {
-                  await GoogleSignIn().signOut().then((value) {
-                    //for hiding progress dialog
-                    Navigator.pop(context);
+                  await APIs.updateActiveStatus(false);
 
-                    //for moving to home screen
-                    Navigator.pop(context);
+                  //sign out from app
+                  await APIs.auth.signOut().then((value) async {
+                    await GoogleSignIn().signOut().then((value) {
+                      //for hiding progress dialog
+                      Navigator.pop(context);
 
-                    APIs.auth = FirebaseAuth.instance;
+                      //for moving to home screen
+                      Navigator.pop(context);
 
-                    //replacing home screen with login screen
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()));
+                      APIs.auth = FirebaseAuth.instance;
+
+                      //replacing home screen with login screen
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const LoginScreen()));
+                    });
                   });
-                });
-              },
-              icon: const Icon(Icons.logout),
-            )
-          ],
-          iconTheme: const IconThemeData(color: Colors.white),
-        ),
-        //body
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: mq.width * .05),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // for adding some space
-                  SizedBox(width: mq.width, height: mq.height * .03),
-
-                  //user profile picture
-                  Stack(
-                    children: [
-                      //profile picture
-                      _image != null
-                          ?
-
-                          //local image
-                          ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(mq.height * .1),
-                              child: Image.file(
-                                File(_image!),
-                                width: mq.height * .2,
-                                height: mq.height * .2,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          :
-
-                          //image from server
-                          ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(mq.height * .1),
-                              child: CachedNetworkImage(
-                                width: mq.height * .2,
-                                height: mq.height * .2,
-                                fit: BoxFit.cover,
-                                imageUrl: widget.user.image,
-                                errorWidget: (context, url, error) =>
-                                    const CircleAvatar(
-                                  child: Icon(
-                                    CupertinoIcons.person,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                      //edit image button
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: () {
-                            _showBottomSheet();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: const Color(0xff008069),
-                                borderRadius: BorderRadius.circular(50)),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-
-                  // for adding some space
-                  SizedBox(height: mq.height * .03),
-
-                  // user email label
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.person),
-                                ],
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Name",
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.user.name,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _editNameAndAbout(
-                                      "Name", widget.user.name, APIs.me.name);
-                                },
-                                child: const Icon(
-                                  Icons.edit,
-                                  color: Color(0xff008069),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: mq.width * .1),
-                        child: const Text(
-                          "This is not your username or pin. This name\n will be visible to your WhatsApp contacts.",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: mq.height * .04),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.help),
-                                ],
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "About",
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.user.about,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _editNameAndAbout("About", widget.user.about,
-                                      APIs.me.about);
-                                },
-                                child: const Icon(
-                                  Icons.edit,
-                                  color: Color(0xff008069),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      SizedBox(height: mq.height * .04),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.email),
-                                ],
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Email",
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.user.email,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  // for adding some space
-                ],
-              ),
-            ),
+                },
+                icon: const Icon(Icons.logout),
+                label: const Text('Logout')),
           ),
-        ),
-      ),
-    );
-  }
 
-  void _editNameAndAbout(String key, String value, String apiValue) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      builder: (_) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          height: 250,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Enter your $key',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+          //body
+          body: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: mq.width * .05),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // for adding some space
+                    SizedBox(width: mq.width, height: mq.height * .03),
+
+                    //user profile picture
+                    Stack(
+                      children: [
+                        //profile picture
+                        _image != null
+                            ?
+
+                            //local image
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(mq.height * .1),
+                                child: Image.file(File(_image!),
+                                    width: mq.height * .2,
+                                    height: mq.height * .2,
+                                    fit: BoxFit.cover))
+                            :
+
+                            //image from server
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(mq.height * .1),
+                                child: CachedNetworkImage(
+                                  width: mq.height * .2,
+                                  height: mq.height * .2,
+                                  fit: BoxFit.cover,
+                                  imageUrl: widget.user.image,
+                                  errorWidget: (context, url, error) =>
+                                      const CircleAvatar(
+                                          child: Icon(CupertinoIcons.person)),
+                                ),
+                              ),
+
+                        //edit image button
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: MaterialButton(
+                            elevation: 1,
+                            onPressed: () {
+                              _showBottomSheet();
+                            },
+                            shape: const CircleBorder(),
+                            color: Colors.white,
+                            child: const Icon(Icons.edit, color: Colors.blue),
+                          ),
+                        )
+                      ],
+                    ),
+
+                    // for adding some space
+                    SizedBox(height: mq.height * .03),
+
+                    // user email label
+                    Text(widget.user.email,
+                        style: const TextStyle(
+                            color: Colors.black54, fontSize: 16)),
+
+                    // for adding some space
+                    SizedBox(height: mq.height * .05),
+
+                    // name input field
+                    TextFormField(
+                      initialValue: widget.user.name,
+                      onSaved: (val) => APIs.me.name = val ?? '',
+                      validator: (val) => val != null && val.isNotEmpty
+                          ? null
+                          : 'Required Field',
+                      decoration: InputDecoration(
+                          prefixIcon:
+                              const Icon(Icons.person, color: Colors.blue),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          hintText: 'eg. Happy Singh',
+                          label: const Text('Name')),
+                    ),
+
+                    // for adding some space
+                    SizedBox(height: mq.height * .02),
+
+                    // about input field
+                    TextFormField(
+                      initialValue: widget.user.about,
+                      onSaved: (val) => APIs.me.about = val ?? '',
+                      validator: (val) => val != null && val.isNotEmpty
+                          ? null
+                          : 'Required Field',
+                      decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.info_outline,
+                              color: Colors.blue),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          hintText: 'eg. Feeling Happy',
+                          label: const Text('About')),
+                    ),
+
+                    // for adding some space
+                    SizedBox(height: mq.height * .05),
+
+                    // update profile button
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          shape: const StadiumBorder(),
+                          minimumSize: Size(mq.width * .5, mq.height * .06)),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          APIs.updateUserInfo().then((value) {
+                            Dialogs.showSnackbar(
+                                context, 'Profile Updated Successfully!');
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.edit, size: 28),
+                      label:
+                          const Text('UPDATE', style: TextStyle(fontSize: 16)),
+                    )
+                  ],
                 ),
               ),
-              TextFormField(
-                initialValue: value,
-                onSaved: (val) => apiValue = val ?? '',
-                validator: (val) =>
-                    val != null && val.isNotEmpty ? null : 'Required Field',
-                decoration: InputDecoration(
-                    border: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    hintText: 'eg. Happy Singh',
-                    suffixText: "${value.length}"),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(
-                        color: Color(0xff008069),
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        APIs.updateUserInfo().then((value) {
-                          Navigator.pop(context);
-                          Dialogs.showSnackbar(
-                              context, '$key Updated Successfully!');
-                        });
-                      }
-                    },
-                    child: const Text(
-                      "Save",
-                      style: TextStyle(
-                        color: Color(0xff008069),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              )
-            ],
-          ),
-        );
-      },
+            ),
+          )),
     );
   }
 
@@ -418,11 +222,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .05),
             children: [
               //pick profile picture label
-              const Text(
-                'Pick Profile Picture',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-              ),
+              const Text('Pick Profile Picture',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
 
               //for adding some space
               SizedBox(height: mq.height * .02),
@@ -454,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Navigator.pop(context);
                         }
                       },
-                      child: Image.asset('assets/images/add_image.png')),
+                      child: Image.asset('images/add_image.png')),
 
                   //take picture from camera button
                   ElevatedButton(
@@ -479,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Navigator.pop(context);
                         }
                       },
-                      child: Image.asset('assets/images/camera.png')),
+                      child: Image.asset('images/camera.png')),
                 ],
               )
             ],

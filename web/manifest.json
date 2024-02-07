@@ -1,6 +1,6 @@
 {
-    "name": "we_chat",
-    "short_name": "we_chat",
+    "name": "uct_chat",
+    "short_name": "uct_chat",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

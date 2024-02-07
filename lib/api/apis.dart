@@ -23,15 +23,16 @@ class APIs {
 
   // for storing self information
   static ChatUser me = ChatUser(
-      id: user.uid,
-      name: user.displayName.toString(),
-      email: user.email.toString(),
-      about: "Hey, I'm using We Chat!",
-      image: user.photoURL.toString(),
-      createdAt: '',
-      isOnline: false,
-      lastActive: '',
-      pushToken: '');
+    id: user.uid,
+    name: user.displayName.toString(),
+    email: user.email.toString(),
+    about: "Hey, I'm using UCT Chat!",
+    image: user.photoURL.toString(),
+    createdAt: '',
+    isOnline: false,
+    lastActive: '',
+    pushToken: '',
+  );
 
   // to return current user
   static User get user => auth.currentUser!;
@@ -81,7 +82,7 @@ class APIs {
           headers: {
             HttpHeaders.contentTypeHeader: 'application/json',
             HttpHeaders.authorizationHeader:
-                'key=AAAALrmzHvg:APA91bGFl_jURWUPBXuMaoAYlCoPGgJovYKJjasoz8tNjSAhZ0xmvbOS2Gws2iP6dO1tdgsoyndEuvx8tolLk_ULaYoqVNmqDocjBJgbRtn6enxo2FzY36fr4PA5YazZfzxtC8YY89k3'
+                'key=AAAAQ0Bf7ZA:APA91bGd5IN5v43yedFDo86WiSuyTERjmlr4tyekbw_YW6JrdLFblZcbHdgjDmogWLJ7VD65KGgVbETS0Px7LnKk8NdAz4Z-AsHRp9WoVfArA5cNpfMKcjh_MQI-z96XQk5oIDUwx8D1'
           },
           body: jsonEncode(body));
       log('Response status: ${res.statusCode}');
@@ -149,7 +150,7 @@ class APIs {
         id: user.uid,
         name: user.displayName.toString(),
         email: user.email.toString(),
-        about: "Hey, I'm using We Chat!",
+        about: "Hey, I'm using UCT Chat!",
         image: user.photoURL.toString(),
         createdAt: time,
         isOnline: false,
@@ -175,6 +176,7 @@ class APIs {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
       List<String> userIds) {
     log('\nUserIds: $userIds');
+
     return firestore
         .collection('users')
         .where('id',
@@ -313,8 +315,7 @@ class APIs {
 
     //storage file ref with path
     final ref = storage.ref().child(
-          'assets/images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext',
-        );
+        'images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
 
     //uploading image
     await ref
@@ -328,7 +329,7 @@ class APIs {
     await sendMessage(chatUser, imageUrl, Type.image);
   }
 
-    static Future<void> sendChatAudio(ChatUser chatUser, File file) async {
+  static Future<void> sendChatAudio(ChatUser chatUser, File file) async {
     //getting image file extension
     final ext = file.path.split('.').last;
 
@@ -367,5 +368,25 @@ class APIs {
         .collection('chats/${getConversationID(message.toId)}/messages/')
         .doc(message.sent)
         .update({'msg': updatedMsg});
+  }
+
+  static Future<void> createUpdate(
+    String mention,
+    String subject,
+    String body,
+    String color,
+  ) async {
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection('updates').add({
+      'message_time_added': time,
+      'message_mention': mention,
+      'message_subject': subject,
+      'message_body': body,
+      'message_color': color
+    });
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUpdateMessages() {
+    return firestore.collection('updates').snapshots();
   }
 }

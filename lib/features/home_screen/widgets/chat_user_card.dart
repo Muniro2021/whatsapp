@@ -2,13 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../api/apis.dart';
-import '../../../../helper/my_date_util.dart';
-import '../../../../main.dart';
-import '../../../../models/chat_user.dart';
-import '../../../../models/message.dart';
-import '../../../chat_screen/view/screen/chat_screen.dart';
-import '../../../../widgets/dialogs/profile_dialog.dart';
+import '../../../api/apis.dart';
+import '../../../helper/my_date_util.dart';
+import '../../../main.dart';
+import '../../../models/chat_user.dart';
+import '../../../models/message.dart';
+import '../../chat_screen/chat_screen.dart';
+import '../../../helper/profile_dialog.dart';
 
 //card to represent a single user in home screen
 class ChatUserCard extends StatefulWidget {
@@ -26,8 +26,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: mq.width * .01, vertical: 1),
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: mq.width * .04, vertical: 4),
+      // color: Colors.blue.shade100,
+      elevation: 0.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: InkWell(
           onTap: () {
             //for navigating to chat screen
@@ -49,22 +52,17 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 leading: InkWell(
                   onTap: () {
                     showDialog(
-                      context: context,
-                      builder: (_) => ProfileDialog(user: widget.user),
-                    );
+                        context: context,
+                        builder: (_) => ProfileDialog(user: widget.user));
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(mq.height * .03),
                     child: CachedNetworkImage(
-                      width: mq.height * .060,
-                      height: mq.height * .060,
+                      width: mq.height * .055,
+                      height: mq.height * .055,
                       imageUrl: widget.user.image,
-                      fit: BoxFit.cover,
                       errorWidget: (context, url, error) => const CircleAvatar(
-                        child: Icon(
-                          CupertinoIcons.person,
-                        ),
-                      ),
+                          child: Icon(CupertinoIcons.person)),
                     ),
                   ),
                 ),

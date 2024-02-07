@@ -5,13 +5,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:we_chat/models/chat_user.dart';
+import 'package:uct_chat/models/chat_user.dart';
 
-import '../../../../api/apis.dart';
-import '../../../../helper/dialogs.dart';
-import '../../../../helper/my_date_util.dart';
-import '../../../../main.dart';
-import '../../../../models/message.dart';
+import '../../../api/apis.dart';
+import '../../../helper/dialogs.dart';
+import '../../../helper/my_date_util.dart';
+import '../../../main.dart';
+import '../../../models/message.dart';
 
 // for showing single message details
 class MessageCard extends StatefulWidget {
@@ -52,6 +52,11 @@ class _MessageCardState extends State<MessageCard> {
         duration = newDuration;
       });
     });
+    audioPlayer.onPositionChanged.listen((newPosition) {
+      setState(() {
+        position = newPosition;
+      });
+    });
   }
 
   @override
@@ -80,21 +85,18 @@ class _MessageCardState extends State<MessageCard> {
             padding: EdgeInsets.all(
               widget.message.type == Type.image
                   ? mq.width * .03
-                  : mq.width * .03,
+                  : mq.width * .04,
             ),
             margin: EdgeInsets.symmetric(
-              horizontal: mq.width * .04,
-              vertical: mq.height * .01,
-            ),
+                horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 221, 245, 255),
-              border: Border.all(color: Colors.blue),
+              border: Border.all(color: Colors.lightBlue),
               //making borders curved
               borderRadius: const BorderRadius.only(
-                // topLeft: Radius.circular(30),
+                topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
                 bottomRight: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
               ),
             ),
             child: widget.message.type == Type.text
@@ -102,31 +104,26 @@ class _MessageCardState extends State<MessageCard> {
                 //show text
                 Text(
                     widget.message.msg,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.black87,
-                    ),
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
                 : widget.message.type == Type.image
                     //show image
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: CachedNetworkImage(
-                          fit: BoxFit.cover,
                           imageUrl: widget.message.msg,
                           placeholder: (context, url) => const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: CircularProgressIndicator(strokeWidth: 2),
                           ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.image,
-                            size: 70,
-                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.image, size: 70),
                         ),
                       )
                     : widget.message.type == Type.audio
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,10 +155,8 @@ class _MessageCardState extends State<MessageCard> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      SliderTheme(
-                                        data: SliderThemeData(
-                                          trackShape: CustomTrackShape(),
-                                        ),
+                                      SizedBox(
+                                        width: 150,
                                         child: Slider(
                                           min: 0,
                                           max: duration.inSeconds.toDouble(),
@@ -172,7 +167,6 @@ class _MessageCardState extends State<MessageCard> {
                                             );
                                             await audioPlayer.seek(position);
                                             await audioPlayer.resume();
-                                            setState(() {});
                                           },
                                           activeColor: Colors.grey,
                                           inactiveColor:
@@ -182,7 +176,6 @@ class _MessageCardState extends State<MessageCard> {
                                     ],
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
                                         formatTime(position),
@@ -194,7 +187,7 @@ class _MessageCardState extends State<MessageCard> {
                                         width: mq.width * .1,
                                       ),
                                       Text(
-                                        formatTime(duration),
+                                        formatTime(duration - position),
                                         style: TextStyle(
                                           color: Colors.grey.withOpacity(0.7),
                                         ),
@@ -252,20 +245,23 @@ class _MessageCardState extends State<MessageCard> {
 
         //message time
         Padding(
-          padding: EdgeInsets.only(
-            right: mq.width * .04,
-          ),
+          padding: EdgeInsets.only(right: mq.width * .04),
           child: Text(
             MyDateUtil.getFormattedTime(
                 context: context, time: widget.message.sent),
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black54,
-            ),
+            style: const TextStyle(fontSize: 13, color: Colors.black54),
           ),
         ),
       ],
     );
+  }
+
+  String formatTime(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return [if (duration.inHours > 0) hours, minutes, seconds].join(':');
   }
 
   // our or user message
@@ -281,11 +277,7 @@ class _MessageCardState extends State<MessageCard> {
 
             //double tick blue icon for message read
             if (widget.message.read.isNotEmpty)
-              const Icon(
-                Icons.done_all_rounded,
-                color: Color(0xff008069),
-                size: 20,
-              ),
+              const Icon(Icons.done_all_rounded, color: Colors.blue, size: 20),
 
             //for adding some space
             const SizedBox(width: 2),
@@ -293,9 +285,7 @@ class _MessageCardState extends State<MessageCard> {
             //sent time
             Text(
               MyDateUtil.getFormattedTime(
-                context: context,
-                time: widget.message.sent,
-              ),
+                  context: context, time: widget.message.sent),
               style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
           ],
@@ -304,56 +294,44 @@ class _MessageCardState extends State<MessageCard> {
         //message content
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(
-              widget.message.type == Type.image
-                  ? mq.width * .03
-                  : mq.width * .03,
-            ),
+            padding: EdgeInsets.all(widget.message.type == Type.image
+                ? mq.width * .03
+                : mq.width * .04),
             margin: EdgeInsets.symmetric(
-              horizontal: mq.width * .04,
-              vertical: mq.height * .01,
-            ),
+                horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
-              color: const Color(0xff008069).withOpacity(0.3),
-              border: Border.all(color: const Color(0xff008069)),
-              //making borders curved
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-                // bottomRight: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
-              ),
-            ),
+                color: const Color.fromARGB(255, 218, 255, 176),
+                border: Border.all(color: Colors.lightGreen),
+                //making borders curved
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30))),
             child: widget.message.type == Type.text
                 ?
                 //show text
                 Text(
                     widget.message.msg,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.black87,
-                    ),
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
                 : widget.message.type == Type.image
                     //show image
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: CachedNetworkImage(
-                          fit: BoxFit.cover,
                           imageUrl: widget.message.msg,
                           placeholder: (context, url) => const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: CircularProgressIndicator(strokeWidth: 2),
                           ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.image,
-                            size: 70,
-                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.image, size: 70),
                         ),
                       )
                     : widget.message.type == Type.audio
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,11 +403,10 @@ class _MessageCardState extends State<MessageCard> {
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      SliderTheme(
-                                        data: SliderThemeData(
-                                          trackShape: CustomTrackShape(),
-                                        ),
+                                      SizedBox(
+                                        width: 150,
                                         child: Slider(
                                           min: 0,
                                           max: duration.inSeconds.toDouble(),
@@ -440,7 +417,6 @@ class _MessageCardState extends State<MessageCard> {
                                             );
                                             await audioPlayer.seek(position);
                                             await audioPlayer.resume();
-                                            setState(() {});
                                           },
                                           activeColor: Colors.grey,
                                           inactiveColor:
@@ -450,7 +426,6 @@ class _MessageCardState extends State<MessageCard> {
                                     ],
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
                                         formatTime(position),
@@ -462,7 +437,7 @@ class _MessageCardState extends State<MessageCard> {
                                         width: mq.width * .1,
                                       ),
                                       Text(
-                                        formatTime(duration),
+                                        formatTime(duration - position),
                                         style: TextStyle(
                                           color: Colors.grey.withOpacity(0.7),
                                         ),
@@ -495,24 +470,17 @@ class _MessageCardState extends State<MessageCard> {
               Container(
                 height: 4,
                 margin: EdgeInsets.symmetric(
-                  vertical: mq.height * .015,
-                  horizontal: mq.width * .4,
-                ),
+                    vertical: mq.height * .015, horizontal: mq.width * .4),
                 decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                    color: Colors.grey, borderRadius: BorderRadius.circular(8)),
               ),
 
               widget.message.type == Type.text
                   ?
                   //copy option
                   _OptionItem(
-                      icon: const Icon(
-                        Icons.copy_all_rounded,
-                        color: Color(0xff008069),
-                        size: 26,
-                      ),
+                      icon: const Icon(Icons.copy_all_rounded,
+                          color: Colors.blue, size: 26),
                       name: 'Copy Text',
                       onTap: () async {
                         await Clipboard.setData(
@@ -520,6 +488,7 @@ class _MessageCardState extends State<MessageCard> {
                             .then((value) {
                           //for hiding bottom sheet
                           Navigator.pop(context);
+
                           Dialogs.showSnackbar(context, 'Text Copied!');
                         });
                       })
@@ -527,13 +496,13 @@ class _MessageCardState extends State<MessageCard> {
                   //save option
                   _OptionItem(
                       icon: const Icon(Icons.download_rounded,
-                          color: Color(0xff008069), size: 26),
+                          color: Colors.blue, size: 26),
                       name: 'Save Image',
                       onTap: () async {
                         try {
                           log('Image Url: ${widget.message.msg}');
                           await GallerySaver.saveImage(widget.message.msg,
-                                  albumName: 'We Chat')
+                                  albumName: 'UCT Chat')
                               .then((success) {
                             //for hiding bottom sheet
                             Navigator.pop(context);
@@ -558,8 +527,7 @@ class _MessageCardState extends State<MessageCard> {
               //edit option
               if (widget.message.type == Type.text && isMe)
                 _OptionItem(
-                    icon: const Icon(Icons.edit,
-                        color: Color(0xff008069), size: 26),
+                    icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
                     name: 'Edit Message',
                     onTap: () {
                       //for hiding bottom sheet
@@ -590,8 +558,7 @@ class _MessageCardState extends State<MessageCard> {
 
               //sent time
               _OptionItem(
-                  icon: const Icon(Icons.remove_red_eye,
-                      color: Color(0xff008069)),
+                  icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
                   name:
                       'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
@@ -613,77 +580,63 @@ class _MessageCardState extends State<MessageCard> {
     String updatedMsg = widget.message.msg;
 
     showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        contentPadding:
-            const EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+        context: context,
+        builder: (_) => AlertDialog(
+              contentPadding: const EdgeInsets.only(
+                  left: 24, right: 24, top: 20, bottom: 10),
 
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
 
-        //title
-        title: const Row(
-          children: [
-            Icon(
-              Icons.message,
-              color: Color(0xff008069),
-              size: 28,
-            ),
-            Text(' Update Message')
-          ],
-        ),
-
-        //content
-        content: TextFormField(
-          initialValue: updatedMsg,
-          maxLines: null,
-          onChanged: (value) => updatedMsg = value,
-          decoration: InputDecoration(
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
-        ),
-
-        //actions
-        actions: [
-          //cancel button
-          MaterialButton(
-            onPressed: () {
-              //hide alert dialog
-              Navigator.pop(context);
-            },
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Color(0xff008069), fontSize: 16),
-            ),
-          ),
-
-          //update button
-          MaterialButton(
-            onPressed: () {
-              //hide alert dialog
-              Navigator.pop(context);
-              APIs.updateMessage(widget.message, updatedMsg);
-            },
-            child: const Text(
-              'Update',
-              style: TextStyle(
-                color: Color(0xff008069),
-                fontSize: 16,
+              //title
+              title: const Row(
+                children: [
+                  Icon(
+                    Icons.message,
+                    color: Colors.blue,
+                    size: 28,
+                  ),
+                  Text(' Update Message')
+                ],
               ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
 
-String formatTime(Duration duration) {
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
-  final hours = twoDigits(duration.inHours);
-  final minutes = twoDigits(duration.inMinutes.remainder(60));
-  final seconds = twoDigits(duration.inSeconds.remainder(60));
-  return [if (duration.inHours > 0) hours, minutes, seconds].join(':');
-  
+              //content
+              content: TextFormField(
+                initialValue: updatedMsg,
+                maxLines: null,
+                onChanged: (value) => updatedMsg = value,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15))),
+              ),
+
+              //actions
+              actions: [
+                //cancel button
+                MaterialButton(
+                    onPressed: () {
+                      //hide alert dialog
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    )),
+
+                //update button
+                MaterialButton(
+                    onPressed: () {
+                      //hide alert dialog
+                      Navigator.pop(context);
+                      APIs.updateMessage(widget.message, updatedMsg);
+                    },
+                    child: const Text(
+                      'Update',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ))
+              ],
+            ));
+  }
 }
 
 //custom options card (for copy, edit, delete, etc.)
@@ -707,12 +660,11 @@ class _OptionItem extends StatelessWidget {
           child: Row(children: [
             icon,
             Flexible(
-              child: Text(
-                '    $name',
-                style: const TextStyle(
-                    fontSize: 15, color: Colors.black54, letterSpacing: 0.5),
-              ),
-            )
+                child: Text('    $name',
+                    style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.black54,
+                        letterSpacing: 0.5)))
           ]),
         ));
   }

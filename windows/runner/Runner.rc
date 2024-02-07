@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.harshRajpurohit" "\0"
-            VALUE "FileDescription", "we_chat" "\0"
+            VALUE "FileDescription", "uct_chat" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "we_chat" "\0"
+            VALUE "InternalName", "uct_chat" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.harshRajpurohit. All rights reserved." "\0"
-            VALUE "OriginalFilename", "we_chat.exe" "\0"
-            VALUE "ProductName", "we_chat" "\0"
+            VALUE "OriginalFilename", "uct_chat.exe" "\0"
+            VALUE "ProductName", "uct_chat" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
