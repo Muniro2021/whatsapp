@@ -12,6 +12,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_storage
   permission_handler_windows
   rive_common
+  url_launcher_windows
   zego_express_engine
   zego_zim
 )

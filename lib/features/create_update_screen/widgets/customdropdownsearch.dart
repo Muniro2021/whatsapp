@@ -1,6 +1,7 @@
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class CustomDropdownSearch extends StatefulWidget {
   final String title;
@@ -28,6 +29,7 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
+            fontFamily: 'Unna',
           ),
         ),
         submitButtonChild: const Text(
@@ -35,6 +37,7 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
+            fontFamily: 'Unna',
           ),
         ),
         data: widget.listdata,
@@ -51,22 +54,29 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
   Widget build(BuildContext context) {
     return TextFormField(
       onChanged: (value) {
-        setState(() {
-          
-        });
+        setState(() {});
       },
       controller: widget.dropdownSelectedName,
-      cursorColor: Colors.blueAccent.withOpacity(0.4),
-      style: const TextStyle(color: Colors.white),
+      cursorColor: whiteColor,
+      style: const TextStyle(color: whiteColor),
       onTap: () {
         FocusScope.of(context).unfocus();
         showdropdownsearch();
       },
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.blueAccent.withOpacity(0.4),
-        hintStyle: const TextStyle(color: Colors.white),
-        contentPadding: const EdgeInsets.all(10),
+        fillColor: primaryLightColor,
+        hintStyle: const TextStyle(
+          color: whiteColor,
+          fontSize: 20,
+          fontFamily: 'Unna',
+        ),
+        suffixIcon: const Icon(
+          Icons.arrow_drop_down,
+          color: whiteColor,
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         hintText: widget.dropdownSelectedName.text == ""
             ? widget.title
             : widget.dropdownSelectedName.text,

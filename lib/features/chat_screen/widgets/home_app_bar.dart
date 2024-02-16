@@ -31,8 +31,12 @@ class HomeAppBar extends StatelessWidget {
             return Row(
               children: [
                 IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back, color: Colors.black54)),
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black54,
+                  ),
+                ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(mq.height * .03),
                   child: CachedNetworkImage(
@@ -52,9 +56,11 @@ class HomeAppBar extends StatelessWidget {
                     Text(
                       list.isNotEmpty ? list[0].name : user.name,
                       style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w500),
+                        fontSize: 16,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Unna',
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -72,6 +78,7 @@ class HomeAppBar extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 13,
                         color: Colors.black54,
+                        fontFamily: 'Unna',
                       ),
                     ),
                   ],

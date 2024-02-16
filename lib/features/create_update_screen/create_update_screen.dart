@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/create_update_screen/widgets/customdropdownsearch.dart';
-import 'package:uct_chat/features/home_screen/widgets/updates_tab.dart';
+import 'package:uct_chat/features/create_update_screen/widgets/custome_text_form_field.dart';
+import 'package:uct_chat/features/create_update_screen/widgets/radio_item.dart';
+import 'package:uct_chat/features/create_update_screen/widgets/radio_item_widget.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/models/users_name.dart';
 
 class CreateUpdateScreen extends StatefulWidget {
@@ -15,6 +19,7 @@ class CreateUpdateScreen extends StatefulWidget {
 
 class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
   GlobalKey<FormState> key = GlobalKey();
+  late TextEditingController idMention;
   late TextEditingController mention;
   late TextEditingController subject;
   late TextEditingController body;
@@ -23,18 +28,58 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
   List<DocumentSnapshot> snapUsersData = [];
   List<SelectedListItem> dropdownlist = [];
   String? selectedColor;
+  String? selectedMention = "everyone";
+  List<RadioModel> sampleData = [];
   @override
   void initState() {
     super.initState();
+    idMention = TextEditingController();
     mention = TextEditingController();
     subject = TextEditingController();
     body = TextEditingController();
     color = TextEditingController();
     getUsers();
+    sampleData.add(
+      RadioModel(
+        false,
+        FontAwesomeIcons.circleInfo,
+        'Info',
+        Colors.blue,
+        "blue",
+      ),
+    );
+    sampleData.add(
+      RadioModel(
+        false,
+        FontAwesomeIcons.solidBell,
+        'Warning',
+        Colors.orange,
+        "orange",
+      ),
+    );
+    sampleData.add(
+      RadioModel(
+        false,
+        FontAwesomeIcons.triangleExclamation,
+        'Urgent',
+        Colors.red,
+        "red",
+      ),
+    );
+    sampleData.add(
+      RadioModel(
+        false,
+        FontAwesomeIcons.handHoldingHeart,
+        'Good',
+        Colors.green,
+        "green",
+      ),
+    );
   }
 
   @override
   void dispose() {
+    idMention.dispose();
     mention.dispose();
     subject.dispose();
     body.dispose();
@@ -51,7 +96,7 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
         dropdownlist.add(
           SelectedListItem(
             name: usersData[i].name!,
-            value: usersData[i].name,
+            value: usersData[i].id,
           ),
         );
       }
@@ -62,226 +107,175 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Create New Update"),
-        ),
         body: Form(
-          key: key,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+      key: key,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          children: [
+            SizedBox(
+              height: 80,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back_ios),
+                  ),
+                  const Text(
+                    "Create New Update",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'Unna',
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  )
+                ],
+              ),
+            ),
+            Row(
               children: [
-                CustomDropdownSearch(
-                  dropdownSelectedId: mention,
-                  dropdownSelectedName: mention,
-                  listdata: dropdownlist,
-                  title: 'Users',
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomTextFormField(
-                  controller: subject,
-                  label: "subject",
-                  hintText: "Add Subject Here",
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomTextFormField(
-                  controller: body,
-                  label: "body",
-                  hintText: "Add Body Here",
-                  maxLines: 7,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.red),
-                        ),
-                        child: Row(
-                          children: [
-                            Radio(
-                              // title: const Text('Danger'),
-                              value: 'red',
-                              groupValue: selectedColor,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedColor = value;
-                                });
-                              },
-                            ),
-                            const Text('Danger'),
-                          ],
-                        ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    children: [
+                      Radio(
+                        // title: const Text('Danger'),
+                        value: 'everyone',
+                        groupValue: selectedMention,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedMention = value;
+                          });
+                        },
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.orange),
-                        ),
-                        child: Row(
-                          children: [
-                            Radio(
-                              // title: const Text('Warrning'),
-                              value: 'orange',
-                              groupValue: selectedColor,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedColor = value;
-                                });
-                              },
-                            ),
-                            const Text('Warrning'),
-                          ],
-                        ),
+                      const Text(
+                        'All Users',
+                        style: TextStyle(fontFamily: 'Unna', fontSize: 20),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  width: 20,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.blue),
-                        ),
-                        child: Row(
-                          children: [
-                            Radio(
-                              // title: const Text('Info'),
-                              value: 'blue',
-                              groupValue: selectedColor,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedColor = value;
-                                });
-                              },
-                            ),
-                            const Text('Info'),
-                          ],
-                        ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    children: [
+                      Radio(
+                        // title: const Text('Warrning'),
+                        value: 'certain',
+                        groupValue: selectedMention,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedMention = value;
+                          });
+                        },
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.green),
-                        ),
-                        child: Row(
-                          children: [
-                            Radio(
-                              // title: const Text('Success'),
-                              value: 'green',
-                              groupValue: selectedColor,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedColor = value;
-                                });
-                              },
-                            ),
-                            const Text('Success'),
-                          ],
-                        ),
+                      const Text(
+                        'Certain User',
+                        style: TextStyle(fontFamily: 'Unna', fontSize: 20),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                InkWell(
-                  onTap: () async {
-                    await APIs.createUpdate(
-                      mention.text,
+              ],
+            ),
+            selectedMention == "everyone"
+                ? const SizedBox.shrink()
+                : CustomDropdownSearch(
+                    dropdownSelectedId: idMention,
+                    dropdownSelectedName: mention,
+                    listdata: dropdownlist,
+                    title: 'Users',
+                  ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomTextFormField(
+              controller: subject,
+              label: "subject",
+              hintText: "Add Subject Here",
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomTextFormField(
+              controller: body,
+              label: "body",
+              hintText: "Add Body Here",
+              maxLines: 7,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 40,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: sampleData.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    //highlightColor: Colors.red,
+                    splashColor: whiteColor,
+                    onTap: () {
+                      setState(() {
+                        for (var element in sampleData) {
+                          element.isSelected = false;
+                        }
+                        sampleData[index].isSelected = true;
+                      });
+                      selectedColor = sampleData[index].value;
+                    },
+                    child: RadioItem(item: sampleData[index]),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              onTap: () async {
+                if (key.currentState!.validate()) {
+                  await APIs.createUpdate(
+                      selectedMention == "everyone" ? "everyone" : mention.text,
                       subject.text,
                       body.text,
                       selectedColor!,
-                    );
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    height: 60,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.blueAccent.withOpacity(0.4),
-                    ),
-                    child: const Text(
-                      "Add Update",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                      selectedMention == "everyone"
+                          ? "everyone"
+                          : idMention.text,
+                      (APIs.getPushToken(idMention.text)).toString());
+                  Navigator.pop(context);
+                }
+              },
+              child: Container(
+                height: 60,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: primaryLightColor,
+                ),
+                child: const Text(
+                  "Add Update",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                )
-              ],
-            ),
-          ),
-        ));
-  }
-}
-
-class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField({
-    super.key,
-    required this.controller,
-    required this.label,
-    required this.hintText,
-    this.maxLines,
-  });
-  final TextEditingController controller;
-  final String label;
-  final String hintText;
-  final int? maxLines;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      textAlign: TextAlign.start,
-      textAlignVertical: TextAlignVertical.top,
-      maxLines: maxLines ?? 1,
-      validator: (val) =>
-          val != null && val.isNotEmpty ? null : 'Required Field',
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            )
+          ],
         ),
-        hintText: hintText,
-        label: Text(label),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
-    );
+    ));
   }
 }

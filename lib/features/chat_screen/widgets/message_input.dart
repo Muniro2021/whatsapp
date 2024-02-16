@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:image_picker/image_picker.dart';
@@ -63,74 +63,17 @@ class MessageInput extends StatelessWidget {
                           },
                           decoration: const InputDecoration(
                             hintText: 'Type Something...',
-                            hintStyle: TextStyle(color: Colors.blueAccent),
+                            hintStyle: TextStyle(
+                              color: Colors.blueAccent,
+                              fontFamily: 'Unna',
+                            ),
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                       IconButton(
                         onPressed: () {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.noHeader,
-                            animType: AnimType.rightSlide,
-                            body: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () async {
-                                    final ImagePicker picker = ImagePicker();
-                                    // Picking multiple images
-                                    final List<XFile> images =
-                                        await picker.pickMultiImage(
-                                      imageQuality: 70,
-                                    );
-                                    // uploading & sending image one by one
-                                    for (var i in images) {
-                                      log('Image Path: ${i.path}');
-                                      chatScreenCubit.changeIsUploading();
-                                      await APIs.sendChatImage(
-                                        user,
-                                        File(i.path),
-                                      );
-                                      chatScreenCubit.changeIsUploading();
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.image,
-                                    color: Colors.blueAccent,
-                                    size: 26,
-                                  ),
-                                ),
-
-                                //take image from camera button
-                                IconButton(
-                                  onPressed: () async {
-                                    final ImagePicker picker = ImagePicker();
-                                    // Pick an image
-                                    final XFile? image = await picker.pickImage(
-                                      source: ImageSource.camera,
-                                      imageQuality: 70,
-                                    );
-                                    if (image != null) {
-                                      log('Image Path: ${image.path}');
-                                      chatScreenCubit.changeIsUploading();
-                                      await APIs.sendChatImage(
-                                        user,
-                                        File(image.path),
-                                      );
-                                      chatScreenCubit.changeIsUploading();
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.camera_alt_rounded,
-                                    color: Colors.blueAccent,
-                                    size: 26,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            btnCancelOnPress: () {},
-                          ).show();
+                          chooseFileToSend(context);
                         },
                         icon: const Icon(
                           Icons.attach_file,
@@ -240,6 +183,170 @@ class MessageInput extends StatelessWidget {
             ),
           )
       ],
+    );
+  }
+
+  Future<dynamic> chooseFileToSend(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        contentPadding: const EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 20,
+          bottom: 10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text('Upload File'),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () async {
+                final ImagePicker picker = ImagePicker();
+                // Picking multiple images
+                final List<XFile> images = await picker.pickMultiImage(
+                  imageQuality: 70,
+                );
+                Navigator.pop(context);
+                // uploading & sending image one by one
+                for (var i in images) {
+                  log('Image Path: ${i.path}');
+                  chatScreenCubit.changeIsUploading();
+                  await APIs.sendChatImage(
+                    user,
+                    File(i.path),
+                  );
+                  chatScreenCubit.changeIsUploading();
+                }
+              },
+              icon: const Icon(
+                Icons.image,
+                color: Colors.blueAccent,
+                size: 26,
+              ),
+            ),
+
+            //take image from camera button
+            IconButton(
+              onPressed: () async {
+                final ImagePicker picker = ImagePicker();
+                // Pick an image
+                final XFile? image = await picker.pickImage(
+                  source: ImageSource.camera,
+                  imageQuality: 70,
+                );
+                Navigator.pop(context);
+                if (image != null) {
+                  log('Image Path: ${image.path}');
+                  chatScreenCubit.changeIsUploading();
+                  await APIs.sendChatImage(
+                    user,
+                    File(image.path),
+                  );
+                  chatScreenCubit.changeIsUploading();
+                }
+              },
+              icon: const Icon(
+                Icons.camera_alt_rounded,
+                color: Colors.blueAccent,
+                size: 26,
+              ),
+            ),
+
+            IconButton(
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  type: FileType.audio,
+                  allowMultiple: true,
+                );
+                Navigator.pop(context);
+                if (result != null) {
+                  var file = result.files.single.path!;
+                  chatScreenCubit.changeIsUploading();
+                  await APIs.sendChatAudio(
+                    user,
+                    File(file),
+                  );
+                  chatScreenCubit.changeIsUploading();
+                }
+              },
+              icon: const Icon(
+                Icons.audiotrack,
+                color: Colors.blueAccent,
+                size: 26,
+              ),
+            ),
+            IconButton(
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  type: FileType.video,
+                  allowMultiple: true,
+                );
+                Navigator.pop(context);
+                if (result != null) {
+                  var file = result.files.single.path!;
+                  chatScreenCubit.changeIsUploading();
+                  await APIs.sendChatVideo(
+                    user,
+                    File(file),
+                  );
+                  chatScreenCubit.changeIsUploading();
+                }
+              },
+              icon: const Icon(
+                Icons.ondemand_video,
+                color: Colors.blueAccent,
+                size: 26,
+              ),
+            ),
+            IconButton(
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  type: FileType.custom,
+                  allowMultiple: true,
+                  allowedExtensions: ['pdf', 'doc', 'pptx'],
+                );
+                Navigator.pop(context);
+                if (result != null) {
+                  var file = result.files.single.path!;
+                  print("file: ----- $file");
+                  chatScreenCubit.changeIsUploading();
+                  print("file: $file");
+                  await APIs.sendChatDoc(
+                    user,
+                    File(file),
+                  );
+                  chatScreenCubit.changeIsUploading();
+                }
+              },
+              icon: const Icon(
+                Icons.file_copy,
+                color: Colors.blueAccent,
+                size: 26,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 16,
+              ),
+            ),
+          ),
+
+          //update button
+        ],
+      ),
     );
   }
 }

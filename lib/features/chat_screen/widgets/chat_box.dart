@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/chat_screen/cubit/chat_screen_cubit.dart';
 import 'package:uct_chat/features/chat_screen/widgets/message_card.dart';
@@ -32,21 +33,20 @@ class ChatBox extends StatelessWidget {
               if (chatScreenCubit.list.isNotEmpty) {
                 return ListView.builder(
                     reverse: true,
+                    addAutomaticKeepAlives: true,
                     itemCount: chatScreenCubit.list.length,
                     padding: EdgeInsets.only(top: mq.height * .01),
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
                       return MessageCard(
+                        // key: chatScreenCubit.list[index].sent as Key,
                         message: chatScreenCubit.list[index],
                         chatUser: user,
                       );
                     });
               } else {
-                return const Center(
-                  child: Text(
-                    'Say Hii! 👋',
-                    style: TextStyle(fontSize: 20),
-                  ),
+                return Center(
+                  child: Lottie.asset('assets/lotties/empty_chat.json'),
                 );
               }
           }

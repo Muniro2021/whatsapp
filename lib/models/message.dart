@@ -19,7 +19,15 @@ class Message {
     toId = json['toId'].toString();
     msg = json['msg'].toString();
     read = json['read'].toString();
-    type = json['type'].toString() == Type.image.name ? Type.image : json['type'].toString() == Type.text.name ? Type.text : Type.audio;
+    type = json['type'].toString() == Type.image.name
+        ? Type.image
+        : json['type'].toString() == Type.text.name
+            ? Type.text
+            : json['type'].toString() == Type.audio.name
+                ? Type.audio
+                : json['type'].toString() == Type.doc.name
+                    ? Type.doc
+                    : Type.video;
     fromId = json['fromId'].toString();
     sent = json['sent'].toString();
   }
@@ -36,4 +44,4 @@ class Message {
   }
 }
 
-enum Type { text, image, audio }
+enum Type { text, image, audio, doc, video }

@@ -1,16 +1,17 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uct_chat/features/home_screen/cubit/home_screen_cubit.dart';
-import 'package:uct_chat/features/home_screen/widgets/calls_tab.dart';
+import 'package:uct_chat/features/home_screen/widgets/leaves_tab.dart';
 import 'package:uct_chat/features/home_screen/widgets/chats_tab.dart';
 import 'package:uct_chat/features/home_screen/widgets/updates_tab.dart';
+import 'package:uct_chat/features/profile_screen/profile_screen.dart';
+import 'package:uct_chat/features/statistics_feature/statistics.dart';
 
 import '../../api/apis.dart';
-import '../profile_screen/profile_screen.dart';
 
 //home screen -- where all available contacts are shown
 class HomeScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     initAnimation();
     super.initState();
-    APIs.getSelfInfo();
+    APIs.getSelfInfo(APIs.me.role);
     viewMode();
   }
 
@@ -43,57 +44,94 @@ class _HomeScreenState extends State<HomeScreen>
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
-                indicatorColor: Colors.black,
-                labelColor: Colors.black,
+                indicatorColor: Colors.orange,
                 tabs: [
                   Tab(
-                    text: "Chats",
+                    child: DefaultTextStyle(
+                      style: TextStyle(
+                        fontFamily: 'Unna',
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                      child: Text("Chats"),
+                    ),
                   ),
                   Tab(
-                    text: "Updates",
+                    child: DefaultTextStyle(
+                      style: TextStyle(
+                        fontFamily: 'Unna',
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                      child: Text("Updates"),
+                    ),
                   ),
                   Tab(
-                    text: "Leaves",
+                    child: DefaultTextStyle(
+                      style: TextStyle(
+                        fontFamily: 'Unna',
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                      child: Text("Leaves"),
+                    ),
                   ),
                 ],
               ),
-              leading: const Icon(CupertinoIcons.home),
-              title: homeScreenCubit.isSearching
-                  ? TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Search..',
-                      ),
-                      autofocus: true,
-                      style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
-                      //when search text changes then updated search list
-                      onChanged: (val) {
-                        homeScreenCubit.onChanged(val);
-                      },
-                    )
-                  : const Text('UCT Chat'),
-              actions: [
-                //search user button
-                IconButton(
-                  onPressed: () {
-                    homeScreenCubit.changeIsSearching();
-                  },
-                  icon: Icon(homeScreenCubit.isSearching
-                      ? CupertinoIcons.clear_circled_solid
-                      : Icons.search),
-                ),
-
-                //more features button
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (_) => ProfileScreen(user: APIs.me)));
-                  },
-                  icon: const Icon(Icons.more_vert),
-                )
-              ],
+                          builder: (context) => ProfileScreen(user: APIs.me),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: CachedNetworkImage(
+                          imageUrl: APIs.me.image,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    'UCT Chat',
+                    style: TextStyle(
+                      fontFamily: 'Unna',
+                      fontSize: 30,
+                      color: Colors.orange,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      value == "statistics"
+                          ? Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const Statistic(),
+                              ),
+                            )
+                          : null;
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      const PopupMenuItem<String>(
+                        value: 'statistics',
+                        child: Text('Statistics'),
+                      ),
+                    ],
+                    icon: const Icon(Icons.more_vert),
+                  ),
+                ],
+              ),
             ),
             body: TabBarView(
               children: [

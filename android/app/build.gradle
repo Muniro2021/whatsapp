@@ -73,11 +73,15 @@ android {
    }
    buildTypes {
        release {
-           signingConfig signingConfigs.release
-        //    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-       }
+            signingConfig signingConfigs.release
+            shrinkResources false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
        debug {
             signingConfig signingConfigs.debug
+            // minifyEnabled false
+            // useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
    }
@@ -91,4 +95,5 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.material:material:1.4.0'
+     implementation "androidx.activity:activity:1.6.0-alpha05"
 }

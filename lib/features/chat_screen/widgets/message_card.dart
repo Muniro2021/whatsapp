@@ -1,11 +1,14 @@
 import 'dart:developer';
-
+import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:uct_chat/features/chat_screen/widgets/pdf_viewer.dart';
+import 'package:uct_chat/helper/image_viewer.dart';
 import 'package:uct_chat/models/chat_user.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../api/apis.dart';
 import '../../../helper/dialogs.dart';
@@ -33,15 +36,25 @@ class _MessageCardState extends State<MessageCard> {
   bool isPlaying = false;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+  late VideoPlayerController videoController;
   @override
   void dispose() {
     super.dispose();
     audioPlayer.dispose();
+    videoController.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    videoController = VideoPlayerController.networkUrl(
+      Uri.parse(widget.message.msg),
+    );
+    videoController.addListener(() {
+      setState(() {});
+    });
+    // _controller.setLooping(true);
+    videoController.initialize().then((_) => setState(() {}));
     audioPlayer.onPlayerStateChanged.listen((state) {
       setState(() {
         isPlaying = state == PlayerState.playing;
@@ -80,24 +93,13 @@ class _MessageCardState extends State<MessageCard> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         //message content
-        Flexible(
+        ChatBubble(
+          clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
+          backGroundColor: const Color(0xffE7E7ED),
+          margin: const EdgeInsets.only(top: 20),
           child: Container(
-            padding: EdgeInsets.all(
-              widget.message.type == Type.image
-                  ? mq.width * .03
-                  : mq.width * .04,
-            ),
-            margin: EdgeInsets.symmetric(
-                horizontal: mq.width * .04, vertical: mq.height * .01),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 221, 245, 255),
-              border: Border.all(color: Colors.lightBlue),
-              //making borders curved
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
             ),
             child: widget.message.type == Type.text
                 ?
@@ -108,16 +110,30 @@ class _MessageCardState extends State<MessageCard> {
                   )
                 : widget.message.type == Type.image
                     //show image
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.message.msg,
-                          placeholder: (context, url) => const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                    ? InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ImageViewer(
+                              imagePath: widget.message.msg,
+                            ),
+                          ));
+                        },
+                        child: InteractiveViewer(
+                          maxScale: 5,
+                          minScale: 0.01,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.message.msg,
+                              placeholder: (context, url) => const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.image, size: 70),
+                            ),
                           ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.image, size: 70),
                         ),
                       )
                     : widget.message.type == Type.audio
@@ -144,7 +160,7 @@ class _MessageCardState extends State<MessageCard> {
                                           : Icons.play_arrow,
                                     ),
                                     iconSize: 40,
-                                    color: Colors.grey,
+                                    color: Colors.black54,
                                   ),
                                 ],
                               ),
@@ -168,7 +184,7 @@ class _MessageCardState extends State<MessageCard> {
                                             await audioPlayer.seek(position);
                                             await audioPlayer.resume();
                                           },
-                                          activeColor: Colors.grey,
+                                          activeColor: Colors.black54,
                                           inactiveColor:
                                               Colors.grey.withOpacity(0.4),
                                         ),
@@ -179,8 +195,8 @@ class _MessageCardState extends State<MessageCard> {
                                     children: [
                                       Text(
                                         formatTime(position),
-                                        style: TextStyle(
-                                          color: Colors.grey.withOpacity(0.7),
+                                        style: const TextStyle(
+                                          color: Colors.black54,
                                         ),
                                       ),
                                       SizedBox(
@@ -188,8 +204,8 @@ class _MessageCardState extends State<MessageCard> {
                                       ),
                                       Text(
                                         formatTime(duration - position),
-                                        style: TextStyle(
-                                          color: Colors.grey.withOpacity(0.7),
+                                        style: const TextStyle(
+                                          color: Colors.black54,
                                         ),
                                       ),
                                     ],
@@ -239,7 +255,43 @@ class _MessageCardState extends State<MessageCard> {
                               ),
                             ],
                           )
-                        : const SizedBox.shrink(),
+                        : widget.message.type == Type.doc
+                            ? SizedBox(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => PDFScreen(
+                                          pathPDF: (widget.message.msg)
+                                              .split('?')[0],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Document/Pdf File",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : AspectRatio(
+                                aspectRatio: videoController.value.aspectRatio,
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: <Widget>[
+                                    VideoPlayer(videoController),
+                                    _ControlsOverlay(
+                                      controller: videoController,
+                                    ),
+                                    VideoProgressIndicator(
+                                      videoController,
+                                      allowScrubbing: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
           ),
         ),
 
@@ -277,7 +329,11 @@ class _MessageCardState extends State<MessageCard> {
 
             //double tick blue icon for message read
             if (widget.message.read.isNotEmpty)
-              const Icon(Icons.done_all_rounded, color: Colors.blue, size: 20),
+              const Icon(
+                Icons.done_all_rounded,
+                color: Colors.blue,
+                size: 20,
+              ),
 
             //for adding some space
             const SizedBox(width: 2),
@@ -286,46 +342,57 @@ class _MessageCardState extends State<MessageCard> {
             Text(
               MyDateUtil.getFormattedTime(
                   context: context, time: widget.message.sent),
-              style: const TextStyle(fontSize: 13, color: Colors.black54),
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.black54,
+              ),
             ),
           ],
         ),
 
         //message content
-        Flexible(
+        ChatBubble(
+          clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
+          alignment: Alignment.topRight,
+          margin: const EdgeInsets.only(top: 20),
+          backGroundColor: Colors.orange.withOpacity(0.8),
           child: Container(
-            padding: EdgeInsets.all(widget.message.type == Type.image
-                ? mq.width * .03
-                : mq.width * .04),
-            margin: EdgeInsets.symmetric(
-                horizontal: mq.width * .04, vertical: mq.height * .01),
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 218, 255, 176),
-                border: Border.all(color: Colors.lightGreen),
-                //making borders curved
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30))),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+            ),
             child: widget.message.type == Type.text
                 ?
                 //show text
                 Text(
                     widget.message.msg,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                    style: const TextStyle(fontSize: 15, color: Colors.white),
                   )
                 : widget.message.type == Type.image
                     //show image
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.message.msg,
-                          placeholder: (context, url) => const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                    ? InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ImageViewer(
+                              imagePath: widget.message.msg,
+                            ),
+                          ));
+                        },
+                        child: InteractiveViewer(
+                          maxScale: 5,
+                          minScale: 0.01,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.message.msg,
+                              placeholder: (context, url) => const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.image, size: 70),
+                            ),
                           ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.image, size: 70),
                         ),
                       )
                     : widget.message.type == Type.audio
@@ -379,23 +446,22 @@ class _MessageCardState extends State<MessageCard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   IconButton(
-                                    onPressed: () async {
-                                      if (isPlaying) {
-                                        await audioPlayer.pause();
-                                      } else {
-                                        await audioPlayer.play(
-                                          UrlSource(widget.message.msg),
-                                        );
-                                      }
-                                    },
-                                    icon: Icon(
-                                      isPlaying
-                                          ? Icons.pause
-                                          : Icons.play_arrow,
-                                    ),
-                                    iconSize: 40,
-                                    color: Colors.grey,
-                                  ),
+                                      onPressed: () async {
+                                        if (isPlaying) {
+                                          await audioPlayer.pause();
+                                        } else {
+                                          await audioPlayer.play(
+                                            UrlSource(widget.message.msg),
+                                          );
+                                        }
+                                      },
+                                      icon: Icon(
+                                        isPlaying
+                                            ? Icons.pause
+                                            : Icons.play_arrow,
+                                      ),
+                                      iconSize: 40,
+                                      color: Colors.white),
                                 ],
                               ),
                               Column(
@@ -418,7 +484,7 @@ class _MessageCardState extends State<MessageCard> {
                                             await audioPlayer.seek(position);
                                             await audioPlayer.resume();
                                           },
-                                          activeColor: Colors.grey,
+                                          activeColor: Colors.white,
                                           inactiveColor:
                                               Colors.grey.withOpacity(0.4),
                                         ),
@@ -429,8 +495,8 @@ class _MessageCardState extends State<MessageCard> {
                                     children: [
                                       Text(
                                         formatTime(position),
-                                        style: TextStyle(
-                                          color: Colors.grey.withOpacity(0.7),
+                                        style: const TextStyle(
+                                          color: Colors.white,
                                         ),
                                       ),
                                       SizedBox(
@@ -438,8 +504,8 @@ class _MessageCardState extends State<MessageCard> {
                                       ),
                                       Text(
                                         formatTime(duration - position),
-                                        style: TextStyle(
-                                          color: Colors.grey.withOpacity(0.7),
+                                        style: const TextStyle(
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ],
@@ -448,7 +514,44 @@ class _MessageCardState extends State<MessageCard> {
                               ),
                             ],
                           )
-                        : const SizedBox.shrink(),
+                        : widget.message.type == Type.doc
+                            ? SizedBox(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PDFScreen(
+                                          pathPDF: (widget.message.msg)
+                                              .split('?')[0],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Document/Pdf File',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : AspectRatio(
+                                aspectRatio: videoController.value.aspectRatio,
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: <Widget>[
+                                    VideoPlayer(videoController),
+                                    _ControlsOverlay(
+                                        controller: videoController),
+                                    VideoProgressIndicator(
+                                      videoController,
+                                      allowScrubbing: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
           ),
         ),
       ],
@@ -472,7 +575,9 @@ class _MessageCardState extends State<MessageCard> {
                 margin: EdgeInsets.symmetric(
                     vertical: mq.height * .015, horizontal: mq.width * .4),
                 decoration: BoxDecoration(
-                    color: Colors.grey, borderRadius: BorderRadius.circular(8)),
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
 
               widget.message.type == Type.text
@@ -492,30 +597,110 @@ class _MessageCardState extends State<MessageCard> {
                           Dialogs.showSnackbar(context, 'Text Copied!');
                         });
                       })
-                  :
-                  //save option
-                  _OptionItem(
-                      icon: const Icon(Icons.download_rounded,
-                          color: Colors.blue, size: 26),
-                      name: 'Save Image',
-                      onTap: () async {
-                        try {
-                          log('Image Url: ${widget.message.msg}');
-                          await GallerySaver.saveImage(widget.message.msg,
-                                  albumName: 'UCT Chat')
-                              .then((success) {
-                            //for hiding bottom sheet
-                            Navigator.pop(context);
-                            if (success != null && success) {
-                              Dialogs.showSnackbar(
-                                  context, 'Image Successfully Saved!');
+                  : widget.message.type == Type.image
+                      //save option
+                      ? _OptionItem(
+                          icon: const Icon(
+                            Icons.download_rounded,
+                            color: Colors.blue,
+                            size: 26,
+                          ),
+                          name: 'Save Image',
+                          onTap: () async {
+                            try {
+                              log('Image Url: ${widget.message.msg}');
+                              await GallerySaver.saveImage(
+                                widget.message.msg,
+                                albumName: 'Images Chat',
+                              ).then((success) {
+                                //for hiding bottom sheet
+                                Navigator.pop(context);
+                                if (success != null && success) {
+                                  Dialogs.showSnackbar(
+                                      context, 'Image Successfully Saved!');
+                                }
+                              });
+                            } catch (e) {
+                              log('ErrorWhileSavingImg: $e');
                             }
-                          });
-                        } catch (e) {
-                          log('ErrorWhileSavingImg: $e');
-                        }
-                      }),
-
+                          })
+                      : widget.message.type == Type.audio
+                          ? _OptionItem(
+                              icon: const Icon(
+                                Icons.download_rounded,
+                                color: Colors.blue,
+                                size: 26,
+                              ),
+                              name: 'Download Audio',
+                              onTap: () async {
+                                try {
+                                  log('Audio Url: ${widget.message.msg}');
+                                  await GallerySaver.downloadFile(
+                                    widget.message.msg,
+                                    // albumName: 'Audios Chat',
+                                  ).then((success) {
+                                    //for hiding bottom sheet
+                                    Navigator.pop(context);
+                                    Dialogs.showSnackbar(context,
+                                        'Audio Successfully Downloaded!');
+                                  });
+                                } catch (e) {
+                                  log('ErrorWhileSavingAudio: $e');
+                                }
+                              })
+                          : widget.message.type == Type.doc
+                              ? _OptionItem(
+                                  icon: const Icon(
+                                    Icons.download_rounded,
+                                    color: Colors.blue,
+                                    size: 26,
+                                  ),
+                                  name: 'Download Document',
+                                  onTap: () async {
+                                    try {
+                                      log('Document Url: ${widget.message.msg}');
+                                      await GallerySaver.downloadFile(
+                                        widget.message.msg,
+                                        // albumName: 'Documents Chat',
+                                      ).then((success) {
+                                        //for hiding bottom sheet
+                                        Navigator.pop(context);
+                                        Dialogs.showSnackbar(
+                                          context,
+                                          'Doc Successfully Downloaded!',
+                                        );
+                                      });
+                                    } catch (e) {
+                                      log('ErrorWhileSavingDoc: $e');
+                                    }
+                                  })
+                              : _OptionItem(
+                                  icon: const Icon(
+                                    Icons.download_rounded,
+                                    color: Colors.blue,
+                                    size: 26,
+                                  ),
+                                  name: 'Download Video',
+                                  onTap: () async {
+                                    try {
+                                      log('Video Url: ${widget.message.msg}');
+                                      await GallerySaver.saveVideo(
+                                        widget.message.msg,
+                                        albumName: 'Videos Chat',
+                                      ).then((success) {
+                                        //for hiding bottom sheet
+                                        Navigator.pop(context);
+                                        if (success != null) {
+                                          Dialogs.showSnackbar(
+                                            context,
+                                            'Video Successfully Downloaded!',
+                                          );
+                                        }
+                                      });
+                                    } catch (e) {
+                                      log('ErrorWhileSavingVideo: $e');
+                                    }
+                                  }),
               //separator or divider
               if (isMe)
                 Divider(
@@ -580,62 +765,63 @@ class _MessageCardState extends State<MessageCard> {
     String updatedMsg = widget.message.msg;
 
     showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              contentPadding: const EdgeInsets.only(
-                  left: 24, right: 24, top: 20, bottom: 10),
+      context: context,
+      builder: (_) => AlertDialog(
+        contentPadding:
+            const EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
 
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
 
-              //title
-              title: const Row(
-                children: [
-                  Icon(
-                    Icons.message,
-                    color: Colors.blue,
-                    size: 28,
-                  ),
-                  Text(' Update Message')
-                ],
-              ),
+        //title
+        title: const Row(
+          children: [
+            Icon(
+              Icons.message,
+              color: Colors.blue,
+              size: 28,
+            ),
+            Text(' Update Message')
+          ],
+        ),
 
-              //content
-              content: TextFormField(
-                initialValue: updatedMsg,
-                maxLines: null,
-                onChanged: (value) => updatedMsg = value,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15))),
-              ),
+        //content
+        content: TextFormField(
+          initialValue: updatedMsg,
+          maxLines: null,
+          onChanged: (value) => updatedMsg = value,
+          decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+        ),
 
-              //actions
-              actions: [
-                //cancel button
-                MaterialButton(
-                    onPressed: () {
-                      //hide alert dialog
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
-                    )),
+        //actions
+        actions: [
+          //cancel button
+          MaterialButton(
+              onPressed: () {
+                //hide alert dialog
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              )),
 
-                //update button
-                MaterialButton(
-                    onPressed: () {
-                      //hide alert dialog
-                      Navigator.pop(context);
-                      APIs.updateMessage(widget.message, updatedMsg);
-                    },
-                    child: const Text(
-                      'Update',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
-                    ))
-              ],
-            ));
+          //update button
+          MaterialButton(
+            onPressed: () {
+              //hide alert dialog
+              Navigator.pop(context);
+              APIs.updateMessage(widget.message, updatedMsg);
+            },
+            child: const Text(
+              'Update',
+              style: TextStyle(color: Colors.blue, fontSize: 16),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -660,11 +846,15 @@ class _OptionItem extends StatelessWidget {
           child: Row(children: [
             icon,
             Flexible(
-                child: Text('    $name',
-                    style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.black54,
-                        letterSpacing: 0.5)))
+              child: Text(
+                '    $name',
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.black54,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            )
           ]),
         ));
   }
@@ -685,5 +875,135 @@ class CustomTrackShape extends RoundedRectSliderTrackShape {
         offset.dy + (parentBox.size.height - trackHeight!) / 2;
     final double trackWidth = parentBox.size.width;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
+}
+
+class _ControlsOverlay extends StatelessWidget {
+  const _ControlsOverlay({required this.controller});
+
+  static const List<Duration> _exampleCaptionOffsets = <Duration>[
+    Duration(seconds: -10),
+    Duration(seconds: -3),
+    Duration(seconds: -1, milliseconds: -500),
+    Duration(milliseconds: -250),
+    Duration.zero,
+    Duration(milliseconds: 250),
+    Duration(seconds: 1, milliseconds: 500),
+    Duration(seconds: 3),
+    Duration(seconds: 10),
+  ];
+  static const List<double> _examplePlaybackRates = <double>[
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0,
+    5.0,
+    10.0,
+  ];
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 50),
+          reverseDuration: const Duration(milliseconds: 200),
+          child: controller.value.isPlaying
+              ? const SizedBox.shrink()
+              : const ColoredBox(
+                  color: Colors.black26,
+                  child: Center(
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 100.0,
+                      semanticLabel: 'Play',
+                    ),
+                  ),
+                ),
+        ),
+        GestureDetector(
+          onTap: () {
+            controller.value.isPlaying ? controller.pause() : controller.play();
+          },
+        ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: PopupMenuButton<Duration>(
+            initialValue: controller.value.captionOffset,
+            tooltip: 'Caption Offset',
+            onSelected: (Duration delay) {
+              controller.setCaptionOffset(delay);
+            },
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuItem<Duration>>[
+                for (final Duration offsetDuration in _exampleCaptionOffsets)
+                  PopupMenuItem<Duration>(
+                    value: offsetDuration,
+                    child: Text('${offsetDuration.inMilliseconds}ms'),
+                  )
+              ];
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                // Using less vertical padding as the text is also longer
+                // horizontally, so it feels like it would need more spacing
+                // horizontally (matching the aspect ratio of the video).
+                vertical: 12,
+                horizontal: 16,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child:
+                    Text('${controller.value.captionOffset.inMilliseconds}ms'),
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: PopupMenuButton<double>(
+            initialValue: controller.value.playbackSpeed,
+            tooltip: 'Playback speed',
+            onSelected: (double speed) {
+              controller.setPlaybackSpeed(speed);
+            },
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuItem<double>>[
+                for (final double speed in _examplePlaybackRates)
+                  PopupMenuItem<double>(
+                    value: speed,
+                    child: Text('${speed}x'),
+                  )
+              ];
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                // Using less vertical padding as the text is also longer
+                // horizontally, so it feels like it would need more spacing
+                // horizontally (matching the aspect ratio of the video).
+                vertical: 12,
+                horizontal: 16,
+              ),
+              child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text('${controller.value.playbackSpeed}x')),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -7,11 +7,11 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission. BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
     <uses-permission android:name="android.permission.WAKE_LOCK" /> 
-    <uses-permission android:name="android.permission. FOREGROUND_SERVICE" /> 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> 
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" /> 
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
@@ -22,7 +22,8 @@
    <application
         android:label="UCT Chat"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

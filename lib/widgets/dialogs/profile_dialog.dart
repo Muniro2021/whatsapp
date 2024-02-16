@@ -59,9 +59,11 @@ class ProfileDialog extends StatelessWidget {
 
                       //move to view profile screen
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => ViewProfileScreen(user: user)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ViewProfileScreen(user: user),
+                        ),
+                      );
                     },
                     minWidth: 0,
                     padding: const EdgeInsets.all(0),

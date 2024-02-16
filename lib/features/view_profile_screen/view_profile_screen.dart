@@ -32,16 +32,21 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
               const Text(
                 'Joined On: ',
                 style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 15),
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                ),
               ),
               Text(
-                  MyDateUtil.getLastMessageTime(
-                      context: context,
-                      time: widget.user.createdAt,
-                      showYear: true),
-                  style: const TextStyle(color: Colors.black54, fontSize: 15)),
+                MyDateUtil.getLastMessageTime(
+                    context: context,
+                    time: widget.user.createdAt,
+                    showYear: true),
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 15,
+                ),
+              ),
             ],
           ),
 
@@ -53,7 +58,6 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                 children: [
                   // for adding some space
                   SizedBox(width: mq.width, height: mq.height * .03),
-
                   //user profile picture
                   ClipRRect(
                     borderRadius: BorderRadius.circular(mq.height * .1),
@@ -63,17 +67,22 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       fit: BoxFit.cover,
                       imageUrl: widget.user.image,
                       errorWidget: (context, url, error) => const CircleAvatar(
-                          child: Icon(CupertinoIcons.person)),
+                        child: Icon(
+                          CupertinoIcons.person,
+                        ),
+                      ),
                     ),
                   ),
-
                   // for adding some space
                   SizedBox(height: mq.height * .03),
-
                   // user email label
-                  Text(widget.user.email,
-                      style:
-                          const TextStyle(color: Colors.black87, fontSize: 16)),
+                  Text(
+                    widget.user.email,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 16,
+                    ),
+                  ),
 
                   // for adding some space
                   SizedBox(height: mq.height * .02),
@@ -85,13 +94,18 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       const Text(
                         'About: ',
                         style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                        ),
                       ),
-                      Text(widget.user.about,
-                          style: const TextStyle(
-                              color: Colors.black54, fontSize: 15)),
+                      Text(
+                        widget.user.about,
+                        style: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 15,
+                        ),
+                      ),
                     ],
                   ),
                 ],

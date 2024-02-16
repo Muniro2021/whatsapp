@@ -40,7 +40,6 @@ class ProfileDialog extends StatelessWidget {
                   ),
                 ),
               ),
-
               //user name
               Positioned(
                 left: mq.width * .04,
@@ -51,10 +50,10 @@ class ProfileDialog extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
+                    fontFamily: 'Unna',
                   ),
                 ),
               ),
-
               //info button
               Positioned(
                   right: 8,
