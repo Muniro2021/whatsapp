@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uct_chat/api/apis.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class CreateLeaveScreen extends StatefulWidget {
   const CreateLeaveScreen({super.key});
@@ -29,7 +30,17 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Leave"),
+        title: const Text(
+          "Create Leave",
+          style: TextStyle(fontFamily: 'Unna'),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        elevation: 0,
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(
@@ -62,17 +73,17 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: selectedLeaveType == typeList[index]["type"]!
-                            ? Colors.blue
-                            : Colors.blue.withOpacity(0.1),
+                            ? primaryLightColor
+                            : primaryLightColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         typeList[index]["title"]!,
                         style: TextStyle(
-                          color: selectedLeaveType == typeList[index]["type"]!
-                              ? Colors.white
-                              : Colors.black,
-                        ),
+                            color: selectedLeaveType == typeList[index]["type"]!
+                                ? Colors.white
+                                : Colors.black,
+                            fontFamily: 'Unna'),
                       ),
                     ),
                   );
@@ -115,11 +126,14 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                                     width: double.infinity,
                                     padding: const EdgeInsets.all(20),
                                     decoration: BoxDecoration(
-                                      color: Colors.blue.withOpacity(0.1),
+                                      color: primaryLightColor.withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     alignment: Alignment.center,
-                                    child: const Text('From'),
+                                    child: const Text(
+                                      'From',
+                                      style: TextStyle(fontFamily: 'Unna'),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -138,11 +152,14 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                                     width: double.infinity,
                                     padding: const EdgeInsets.all(20),
                                     decoration: BoxDecoration(
-                                      color: Colors.blue.withOpacity(0.1),
+                                      color: primaryLightColor.withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     alignment: Alignment.center,
-                                    child: const Text('To'),
+                                    child: const Text(
+                                      'To',
+                                      style: TextStyle(fontFamily: 'Unna'),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -195,7 +212,7 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: primaryLightColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: TextFormField(
@@ -204,6 +221,7 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(20),
                   hintText: "Enter Leave Cause",
+                  hintStyle: TextStyle(fontFamily: 'Unna'),
                   border: InputBorder.none,
                 ),
               ),
@@ -219,13 +237,13 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: primaryLightColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 alignment: Alignment.center,
                 child: const Text(
                   'Leave Apply',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontFamily: 'Unna'),
                 ),
               ),
             ),
@@ -242,17 +260,16 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
           false, // Set to true if you want to allow dismissing the dialog by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Leave Details'),
+          title: const Text('Leave Details', style: TextStyle(fontFamily: 'Unna'),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("From Date: ${selectedFromDate.toString().split(' ')[0]}"),
-              Text("To Date: ${selectedToDate.toString().split(' ')[0]}"),
-              Text(
-                  "From Hour: ${selectedFromTime.format(context).toString()}"),
-              Text("To Hour: ${selectedToTime.format(context).toString()}"),
-              Text("Cause: ${controller.text}"),
+              Text("From Date: ${selectedFromDate.toString().split(' ')[0]}", style: const TextStyle(fontFamily: 'Unna'),),
+              Text("To Date: ${selectedToDate.toString().split(' ')[0]}", style: const TextStyle(fontFamily: 'Unna'),),
+              Text("From Hour: ${selectedFromTime.format(context).toString()}", style: const TextStyle(fontFamily: 'Unna'),),
+              Text("To Hour: ${selectedToTime.format(context).toString()}", style: const TextStyle(fontFamily: 'Unna'),),
+              Text("Cause: ${controller.text}", style: const TextStyle(fontFamily: 'Unna'),),
               Text(
                 (() {
                   switch (selectedLeaveType) {
@@ -267,19 +284,19 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                     default:
                       return "";
                   }
-                })(),
+                })(), style: const TextStyle(fontFamily: 'Unna'),
               ),
             ],
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: const Text('Close', style: TextStyle(fontFamily: 'Unna', color: primaryLightColor),),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: const Text('Submit'),
+              child: const Text('Submit', style: TextStyle(fontFamily: 'Unna', color: primaryLightColor),),
               onPressed: () {
                 APIs.leaveApply(
                   selectedFromDate.toString().split(' ')[0],

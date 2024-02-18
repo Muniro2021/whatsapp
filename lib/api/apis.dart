@@ -30,6 +30,9 @@ class APIs {
     lastActive: '',
     pushToken: '',
     role: 0,
+    salary: '0',
+    position: 'Choose Position',
+    rating: '0'
   );
 
   // to return current user
@@ -149,6 +152,9 @@ class APIs {
       lastActive: time,
       pushToken: '',
       role: role,
+      salary: '0',
+      position: 'Choose Position',
+      rating: '0'
     );
     return await firestore
         .collection('users')
@@ -202,6 +208,8 @@ class APIs {
     await firestore.collection('users').doc(user.uid).update({
       'name': me.name,
       'about': me.about,
+      'position': me.position,
+      'salary': me.salary,
     });
   }
 

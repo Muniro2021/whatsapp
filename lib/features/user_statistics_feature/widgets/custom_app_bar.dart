@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget {
           const Text(
             "Statistic",
             style: TextStyle(
-              fontSize: 40,
+              fontSize: 25,
               fontWeight: FontWeight.bold,
               fontFamily: 'Unna',
             ),

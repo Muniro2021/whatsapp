@@ -4,6 +4,7 @@ import 'package:uct_chat/features/admin_statistics_feature/widgets/custom_app_ba
 import 'package:uct_chat/features/admin_statistics_feature/widgets/get_month.dart';
 import 'package:uct_chat/features/admin_statistics_feature/widgets/leaves_card.dart';
 import 'package:uct_chat/features/admin_statistics_feature/widgets/updates_card.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class UserStatisticFromAdmin extends StatefulWidget {
   const UserStatisticFromAdmin(
@@ -69,7 +70,7 @@ class _UserStatisticFromAdminState extends State<UserStatisticFromAdmin> {
                                     child: Text(
                                       "Leaves",
                                       style: TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 20,
                                         fontFamily: 'Unna',
                                       ),
                                     ),
@@ -121,12 +122,24 @@ class _UserStatisticFromAdminState extends State<UserStatisticFromAdmin> {
                                                 } else {
                                                   final leaveHours =
                                                       snapshot.data;
-                                                  return Text(
-                                                    leaveHours!,
-                                                    style: const TextStyle(
-                                                      fontFamily: 'Unna',
-                                                      fontSize: 20,
-                                                    ),
+                                                  return Row(
+                                                    children: [
+                                                      Text(
+                                                        leaveHours!,
+                                                        style: const TextStyle(
+                                                            fontFamily: 'Unna',
+                                                            fontSize: 20,
+                                                            color:
+                                                                primaryLightColor),
+                                                      ),
+                                                      const Text(
+                                                        " hours",
+                                                        style: TextStyle(
+                                                          fontFamily: 'Unna',
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   );
                                                 }
                                               },
@@ -162,14 +175,26 @@ class _UserStatisticFromAdminState extends State<UserStatisticFromAdmin> {
                                                   return Text(
                                                       'Error: ${snapshot.error}');
                                                 } else {
-                                                  final leaveHours =
+                                                  final leaveDays =
                                                       snapshot.data;
-                                                  return Text(
-                                                    leaveHours!,
-                                                    style: const TextStyle(
-                                                      fontFamily: 'Unna',
-                                                      fontSize: 20,
-                                                    ),
+                                                  return Row(
+                                                    children: [
+                                                      Text(
+                                                        leaveDays!,
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Unna',
+                                                          fontSize: 20,
+                                                    color: primaryLightColor
+                                                        ),
+                                                      ),
+                                                      const Text(
+                                                        ' days',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Unna',
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   );
                                                 }
                                               },
@@ -190,7 +215,7 @@ class _UserStatisticFromAdminState extends State<UserStatisticFromAdmin> {
                                     child: Text(
                                       "Updates",
                                       style: TextStyle(
-                                          fontSize: 30, fontFamily: 'Unna'),
+                                          fontSize: 20, fontFamily: 'Unna'),
                                     ),
                                   ),
                                 ),

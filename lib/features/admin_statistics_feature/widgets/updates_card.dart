@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uct_chat/features/admin_statistics_feature/data/statistic_data_api.dart';
 import 'package:uct_chat/features/admin_statistics_feature/widgets/data_counter.dart';
+import 'package:uct_chat/main.dart';
 
 class UpdatesCard extends StatelessWidget {
   const UpdatesCard({
@@ -20,7 +21,9 @@ class UpdatesCard extends StatelessWidget {
       children: [
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width / 4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -34,7 +37,7 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 const Text(
                   "Info",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),
@@ -42,7 +45,9 @@ class UpdatesCard extends StatelessWidget {
         ),
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width / 4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -56,7 +61,7 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 const Text(
                   "Warning",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),
@@ -64,7 +69,9 @@ class UpdatesCard extends StatelessWidget {
         ),
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width / 4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -78,7 +85,7 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 const Text(
                   "Urgent",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),
@@ -86,7 +93,9 @@ class UpdatesCard extends StatelessWidget {
         ),
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width / 4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -100,7 +109,7 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 const Text(
                   "Good",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),

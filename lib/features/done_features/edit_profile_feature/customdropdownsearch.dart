@@ -1,6 +1,7 @@
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/helper/utils/constant.dart';
 
 class CustomDropdownSearch extends StatefulWidget {
@@ -8,12 +9,14 @@ class CustomDropdownSearch extends StatefulWidget {
   final List<SelectedListItem> listdata;
   final TextEditingController dropdownSelectedName;
   final TextEditingController dropdownSelectedId;
+  final String position;
   const CustomDropdownSearch({
     super.key,
     required this.title,
     required this.listdata,
     required this.dropdownSelectedName,
     required this.dropdownSelectedId,
+    required this.position,
   });
 
   @override
@@ -29,7 +32,6 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
-            fontFamily: 'Unna',
           ),
         ),
         submitButtonChild: const Text(
@@ -37,7 +39,6 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            fontFamily: 'Unna',
           ),
         ),
         data: widget.listdata,
@@ -53,43 +54,24 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onChanged: (value) {
-        setState(() {});
-      },
-      
+      style: const TextStyle(fontFamily: 'Unna'),
+      onSaved: (val) => APIs.me.position = val ?? '',
+      validator: (val) =>
+          val != null && val.isNotEmpty ? null : 'Required Field',
       controller: widget.dropdownSelectedName,
-      cursorColor: whiteColor,
-      style: const TextStyle(color: whiteColor, fontFamily: 'Unna'),
+      cursorColor: Colors.black,
       onTap: () {
         FocusScope.of(context).unfocus();
         showdropdownsearch();
       },
       decoration: InputDecoration(
-        filled: true,
-        fillColor: primaryLightColor,
-        hintStyle: const TextStyle(
-          color: whiteColor,
-          fontSize: 20,
-          fontFamily: 'Unna',
-        ),
-        suffixIcon: const Icon(
-          Icons.arrow_drop_down,
-          color: whiteColor,
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        hintText: widget.dropdownSelectedName.text == ""
+        prefixIcon: const Icon(Icons.accessibility, color: primaryLightColor),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        label: const Text('Position'),
+        labelStyle: const TextStyle(color: seconderyDarkColor),
+                hintText: widget.dropdownSelectedName.text == ""
             ? widget.title
             : widget.dropdownSelectedName.text,
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(8.0),
-          ),
-        ),
       ),
     );
   }

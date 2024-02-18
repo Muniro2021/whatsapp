@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uct_chat/api/apis.dart';
-import 'package:uct_chat/features/view_profile_screen/view_profile_screen.dart';
+import 'package:uct_chat/features/done_features/view_profile_feature/view_profile.dart';
 import 'package:uct_chat/helper/my_date_util.dart';
 import 'package:uct_chat/main.dart';
 import 'package:uct_chat/models/chat_user.dart';
@@ -18,7 +18,7 @@ class HomeAppBar extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ViewProfileScreen(user: user),
+            builder: (_) => ViewProfile(user: user),
           ),
         );
       },
@@ -33,7 +33,7 @@ class HomeAppBar extends StatelessWidget {
                 IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(
-                    Icons.arrow_back,
+                    Icons.arrow_back_ios,
                     color: Colors.black54,
                   ),
                 ),

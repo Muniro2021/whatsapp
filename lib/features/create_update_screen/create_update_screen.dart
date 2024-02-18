@@ -156,7 +156,7 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
                       ),
                       const Text(
                         'All Users',
-                        style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                        style: TextStyle(fontFamily: 'Unna', fontSize: 20,),
                       ),
                     ],
                   ),
@@ -269,6 +269,7 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'Unna'
                   ),
                 ),
               ),

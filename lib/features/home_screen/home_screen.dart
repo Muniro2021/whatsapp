@@ -4,12 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uct_chat/features/done_features/edit_profile_feature/edit_profile.dart';
 import 'package:uct_chat/features/home_screen/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/home_screen/widgets/leaves_tab.dart';
 import 'package:uct_chat/features/home_screen/widgets/chats_tab.dart';
 import 'package:uct_chat/features/home_screen/widgets/updates_tab.dart';
-import 'package:uct_chat/features/profile_screen/profile_screen.dart';
 import 'package:uct_chat/features/statistics_feature/statistics.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 import '../../api/apis.dart';
 
@@ -44,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen>
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
-                indicatorColor: Colors.orange,
+                indicatorColor: primaryLightColor,
                 tabs: [
                   Tab(
                     child: DefaultTextStyle(
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen>
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(user: APIs.me),
+                          builder: (context) => EditProfile(user: APIs.me),
                         ),
                       );
                     },
@@ -108,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen>
                     style: TextStyle(
                       fontFamily: 'Unna',
                       fontSize: 30,
-                      color: Colors.orange,
+                      color: primaryLightColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

@@ -1,9 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/admin_statistics_feature/widgets/custom_app_bar.dart';
 import 'package:uct_chat/features/admin_statistics_feature/widgets/user_statistic.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/models/chat_user.dart';
 
 class AdminStatistic extends StatefulWidget {
@@ -64,48 +66,87 @@ class _AdminStatisticState extends State<AdminStatistic> {
                         );
                       },
                       child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child:
-                                  CachedNetworkImage(imageUrl: chatUser.image),
-                            ),
-                            Text(
-                              chatUser.name,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontFamily: 'Unna',
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: CachedNetworkImage(
+                                        imageUrl: chatUser.image),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          APIs.deleteUser(chatUser.id);
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: Colors.red.withOpacity(0.6),
+                                          ),
+                                          child: const Icon(
+                                            Icons.delete,
+                                            color: whiteColor,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.info,
+
+                                            animType: AnimType.rightSlide,
+                                            title: 'Comming Soon..',
+                                            desc:
+                                                'Under Maintain',
+                                            btnCancelOnPress: () {
+                                              // Navigator.pop(context);
+                                            },
+                                          ).show();
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: primaryLightColor
+                                                .withOpacity(0.6),
+                                          ),
+                                          child: const Icon(
+                                            Icons.edit,
+                                            color: whiteColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    APIs.deleteUser(chatUser.id);
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.red.shade100,
-                                    ),
-                                    child: const Icon(Icons.delete),
-                                  ),
+                              Text(
+                                chatUser.name,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Unna',
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.blue.shade100,
-                                  ),
-                                  child: const Icon(Icons.edit),
-                                ),
-                              ],
-                            )
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

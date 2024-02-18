@@ -9,7 +9,7 @@ class RegisterAs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 40),
+      margin: const EdgeInsets.only(bottom: 40, top: 100),
       child: Row(
         children: [
           const Expanded(child: Divider()),

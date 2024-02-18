@@ -4,31 +4,56 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uct_chat/features/login_feature/login_screen.dart';
-
-import '../../api/apis.dart';
-import '../../helper/dialogs.dart';
-import '../../main.dart';
-import '../../models/chat_user.dart';
+import 'package:uct_chat/api/apis.dart';
+import 'package:uct_chat/features/done_features/edit_profile_feature/customdropdownsearch.dart';
+import 'package:uct_chat/features/done_features/edit_profile_feature/widgets/update_btn.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
+import 'package:uct_chat/main.dart';
+import 'package:uct_chat/models/chat_user.dart';
 
 //profile screen -- to show signed in user info
-class ProfileScreen extends StatefulWidget {
+class EditProfile extends StatefulWidget {
   final ChatUser user;
 
-  const ProfileScreen({super.key, required this.user});
+  const EditProfile({super.key, required this.user});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
   String? _image;
+  List<SelectedListItem> dropdownlist = [];
+  TextEditingController? catname;
+  TextEditingController? catid;
+  void getPositions() {
+    List<Map<String, String>> data = [
+      {'0': 'HR'},
+      {'1': 'Flutter Developer'},
+      {'2': 'Backend Developer'},
+      {'3': 'Content Writer'},
+      {'4': 'Designer'},
+    ];
+
+    for (int i = 0; i < data.length; i++) {
+      String key = i.toString();
+      String value = data[i][key]!;
+      dropdownlist.add(SelectedListItem(name: value, value: key));
+    }
+  }
+
+  @override
+  void initState() {
+    catname = TextEditingController();
+    catid = TextEditingController();
+    getPositions();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,66 +62,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
           //app bar
-          appBar: AppBar(
-            title: const Text('Profile Screen'),
-            actions: widget.user.role == 0
-                ? null
-                : [
-                    PopupMenuButton(
-                      icon: const Icon(
-                        Icons.more_vert,
-                      ), // Three vertical dots icon
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem(
-                            value: 'password',
-                            child: const Text('Change Admin Password'),
-                            onTap: () async {
-                              String adminPassword =
-                                  await APIs.getAdminPassword();
-
-                              _showDialog(adminPassword);
-                            },
-                          ),
-                        ];
-                      },
-                    ),
-                  ],
-          ),
+          appBar: editProfileAppBar(context),
 
           //floating button to log out
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: FloatingActionButton.extended(
-                backgroundColor: Colors.redAccent,
-                onPressed: () async {
-                  //for showing progress dialog
-                  Dialogs.showProgressBar(context);
-
-                  await APIs.updateActiveStatus(false);
-
-                  //sign out from app
-                  await APIs.auth.signOut().then((value) async {
-                    await GoogleSignIn().signOut().then((value) {
-                      //for hiding progress dialog
-                      Navigator.pop(context);
-
-                      //for moving to home screen
-                      Navigator.pop(context);
-
-                      APIs.auth = FirebaseAuth.instance;
-
-                      //replacing home screen with login screen
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const LoginScreen()));
-                    });
-                  });
-                },
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout')),
-          ),
+          floatingActionButton: UpdateBtn(formKey: _formKey),
 
           //body
           body: Form(
@@ -155,7 +124,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             },
                             shape: const CircleBorder(),
                             color: Colors.white,
-                            child: const Icon(Icons.edit, color: Colors.blue),
+                            child: const Icon(
+                              Icons.edit,
+                              color: primaryLightColor,
+                            ),
                           ),
                         )
                       ],
@@ -175,9 +147,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Text(
                               widget.user.role == 0 ? "User" : "Admin",
                               style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontFamily: 'Unna',
+                                  color: primaryLightColor),
                             ),
                           ),
                         ),
@@ -191,8 +164,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Text(
                       widget.user.email,
                       style: const TextStyle(
-                        color: Colors.black54,
+                        color: seconderyDarkColor,
                         fontSize: 16,
+                        fontFamily: 'Unna',
                       ),
                     ),
                     // for adding some space
@@ -201,18 +175,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // name input field
                     TextFormField(
                       initialValue: widget.user.name,
+                      style: const TextStyle(fontFamily: 'Unna'),
                       onSaved: (val) => APIs.me.name = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
                       decoration: InputDecoration(
-                        prefixIcon:
-                            const Icon(Icons.person, color: Colors.blue),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        hintText: 'eg. Happy Singh',
-                        label: const Text('Name'),
-                      ),
+                          prefixIcon: const Icon(Icons.person,
+                              color: primaryLightColor),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          hintText: 'eg. Happy Singh',
+                          label: const Text('Name'),
+                          labelStyle:
+                              const TextStyle(color: seconderyDarkColor)),
                     ),
 
                     // for adding some space
@@ -221,47 +197,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // about input field
                     TextFormField(
                       initialValue: widget.user.about,
+                      style: const TextStyle(fontFamily: 'Unna'),
                       onSaved: (val) => APIs.me.about = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
                       decoration: InputDecoration(
-                        prefixIcon:
-                            const Icon(Icons.info_outline, color: Colors.blue),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        hintText: 'eg. Feeling Happy',
-                        label: const Text('About'),
-                      ),
+                          prefixIcon: const Icon(Icons.info_outline,
+                              color: primaryLightColor),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          hintText: 'eg. Feeling Happy',
+                          label: const Text('About'),
+                          labelStyle:
+                              const TextStyle(color: seconderyDarkColor)),
+                    ),
+
+                    SizedBox(height: mq.height * .02),
+                    
+                    CustomDropdownSearch(
+                      dropdownSelectedId: catid!,
+                      dropdownSelectedName: catname!,
+                      listdata: dropdownlist,
+                      title: 'Positions', 
+                      position: widget.user.position,
+                    ),
+
+                    SizedBox(height: mq.height * .02),
+
+                    // about input field
+                    TextFormField(
+                      initialValue: widget.user.salary,
+                      enabled: widget.user.id == APIs.me.id ? false : true,
+                      style: const TextStyle(fontFamily: 'Unna'),
+                      onSaved: (val) => APIs.me.salary = val ?? '',
+                      validator: (val) => val != null && val.isNotEmpty
+                          ? null
+                          : 'Required Field',
+                      decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.money,
+                            color: primaryLightColor,
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          hintText: '0',
+                          label: const Text('Salary'),
+                          labelStyle:
+                              const TextStyle(color: seconderyDarkColor)),
                     ),
                     // for adding some space
                     SizedBox(height: mq.height * .04),
 
                     // update profile button
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          minimumSize: Size(mq.width * .5, mq.height * .06)),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          APIs.updateUserInfo().then((value) {
-                            Dialogs.showSnackbar(
-                                context, 'Profile Updated Successfully!');
-                          });
-                        }
-                      },
-                      icon: const Icon(Icons.edit, size: 28),
-                      label: const Text(
-                        'UPDATE',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    )
                   ],
                 ),
               ),
             ),
           )),
+    );
+  }
+
+  AppBar editProfileAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text(
+        'Edit Profile',
+        style: TextStyle(fontFamily: 'Unna'),
+      ),
+      elevation: 0,
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: const Icon(Icons.arrow_back_ios),
+      ),
+      actions: widget.user.role == 0
+          ? null
+          : [
+              PopupMenuButton(
+                icon: const Icon(
+                  Icons.more_vert,
+                ), // Three vertical dots icon
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'password',
+                      child: const Text('Change Admin Password'),
+                      onTap: () async {
+                        String adminPassword = await APIs.getAdminPassword();
+
+                        _showDialog(adminPassword);
+                      },
+                    ),
+                  ];
+                },
+              ),
+            ],
     );
   }
 
@@ -420,5 +451,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-  
 }

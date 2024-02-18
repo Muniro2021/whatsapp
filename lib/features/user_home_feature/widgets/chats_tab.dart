@@ -7,6 +7,7 @@ import 'package:uct_chat/features/call_screen/call_screen.dart';
 import 'package:uct_chat/features/user_home_feature/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/chat_user_card.dart';
 import 'package:uct_chat/helper/dialogs.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/main.dart';
 import 'package:uct_chat/models/chat_user.dart';
 
@@ -60,189 +61,38 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
           //app bar
           //floating button to add new user
           floatingActionButton: FloatingActionBubble(
-                  items: <Bubble>[
-                    Bubble(
-                      title: "Group Call",
-                      iconColor: Colors.white,
-                      bubbleColor: Colors.blue,
-                      icon: Icons.call,
-                      titleStyle:
-                          const TextStyle(fontSize: 16, color: Colors.white),
-                      onPress: () {
-                        String callId = '';
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            contentPadding: const EdgeInsets.only(
-                                left: 24, right: 24, top: 20, bottom: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-
-                            //title
-                            title: const Row(
-                              children: [
-                                Icon(
-                                  Icons.call_outlined,
-                                  color: Color(0xff008069),
-                                  size: 28,
-                                ),
-                                Text('Add Call Id')
-                              ],
-                            ),
-
-                            //content
-                            content: TextFormField(
-                              maxLines: null,
-                              onChanged: (value) => callId = value,
-                              decoration: InputDecoration(
-                                hintText: 'Call Id',
-                                prefixIcon: const Icon(
-                                  Icons.call_outlined,
-                                  color: Color(0xff008069),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                            ),
-
-                            //actions
-                            actions: [
-                              //cancel button
-                              MaterialButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    color: Color(0xff008069),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-
-                              //add button
-                              MaterialButton(
-                                onPressed: () async {
-                                  //hide alert dialog
-                                  Navigator.pop(context);
-                                  if (callId.isNotEmpty) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => CallInvitationPage(
-                                          callId: callId,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: const Text(
-                                  'Join',
-                                  style: TextStyle(
-                                    color: Color(0xff008069),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    Bubble(
-                      title: "New User",
-                      iconColor: Colors.white,
-                      bubbleColor: const Color(0xff008069),
-                      icon: Icons.message,
-                      titleStyle:
-                          const TextStyle(fontSize: 16, color: Colors.white),
-                      onPress: () {
-                        String email = '';
-
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            contentPadding: const EdgeInsets.only(
-                                left: 24, right: 24, top: 20, bottom: 10),
-
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-
-                            //title
-                            title: const Row(
-                              children: [
-                                Icon(
-                                  Icons.person_add,
-                                  color: Colors.blue,
-                                  size: 28,
-                                ),
-                                Text('  Add User')
-                              ],
-                            ),
-
-                            //content
-                            content: TextFormField(
-                              maxLines: null,
-                              onChanged: (value) => email = value,
-                              decoration: InputDecoration(
-                                hintText: 'Email Id',
-                                prefixIcon:
-                                    const Icon(Icons.email, color: Colors.blue),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                            ),
-
-                            //actions
-                            actions: [
-                              //cancel button
-                              MaterialButton(
-                                  onPressed: () {
-                                    //hide alert dialog
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Cancel',
-                                      style: TextStyle(
-                                          color: Colors.blue, fontSize: 16))),
-
-                              //add button
-                              MaterialButton(
-                                onPressed: () async {
-                                  //hide alert dialog
-                                  Navigator.pop(context);
-                                  if (email.isNotEmpty) {
-                                    await APIs.addChatUser(email).then((value) {
-                                      if (!value) {
-                                        Dialogs.showSnackbar(
-                                            context, 'User does not Exists!');
-                                      }
-                                    });
-                                  }
-                                },
-                                child: const Text(
-                                  'Add',
-                                  style: TextStyle(
-                                      color: Colors.blue, fontSize: 16),
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                  animation: widget._animation!,
-                  onPress: () => widget._animationController!.isCompleted
-                      ? widget._animationController!.reverse()
-                      : widget._animationController!.forward(),
-                  iconColor: const Color(0xff008069),
-                  iconData: Icons.settings,
-                  backGroundColor: Colors.white,
-                ),
+            items: <Bubble>[
+              Bubble(
+                title: "Group Call",
+                iconColor: Colors.white,
+                bubbleColor: primaryLightColor,
+                icon: Icons.call,
+                titleStyle: const TextStyle(
+                    fontSize: 16, color: Colors.white, fontFamily: 'Unna'),
+                onPress: () {
+                  videoCall(context);
+                },
+              ),
+              Bubble(
+                title: "New User",
+                iconColor: Colors.white,
+                bubbleColor: primaryLightColor,
+                icon: Icons.message,
+                titleStyle: const TextStyle(
+                    fontSize: 16, color: Colors.white, fontFamily: 'Unna'),
+                onPress: () {
+                  addUserChat(context);
+                },
+              ),
+            ],
+            animation: widget._animation!,
+            onPress: () => widget._animationController!.isCompleted
+                ? widget._animationController!.reverse()
+                : widget._animationController!.forward(),
+            iconColor: primaryLightColor,
+            iconData: Icons.settings,
+            backGroundColor: Colors.white,
+          ),
 
           body: Column(
             children: [
@@ -286,7 +136,6 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
               Expanded(
                 child: StreamBuilder(
                   stream: APIs.getMyUsersId(),
-                     
 
                   //get id of only known users
                   builder: (context, snapshot) {
@@ -354,6 +203,166 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<dynamic> videoCall(BuildContext context) {
+    String callId = '';
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        contentPadding:
+            const EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+
+        //title
+        title: const Row(
+          children: [
+            Icon(
+              Icons.call_outlined,
+              color: primaryLightColor,
+              size: 28,
+            ),
+            Text('Add Call Id')
+          ],
+        ),
+
+        //content
+        content: TextFormField(
+          maxLines: null,
+          onChanged: (value) => callId = value,
+          decoration: InputDecoration(
+            hintText: 'Call Id',
+            prefixIcon: const Icon(
+              Icons.call_outlined,
+              color: primaryLightColor,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+        ),
+
+        //actions
+        actions: [
+          //cancel button
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                color: primaryLightColor,
+                fontSize: 16,
+              ),
+            ),
+          ),
+
+          //add button
+          MaterialButton(
+            onPressed: () async {
+              //hide alert dialog
+              Navigator.pop(context);
+              if (callId.isNotEmpty) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CallInvitationPage(
+                      callId: callId,
+                    ),
+                  ),
+                );
+              }
+            },
+            child: const Text(
+              'Join',
+              style: TextStyle(
+                color: primaryLightColor,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void addUserChat(BuildContext context) {
+    String email = '';
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        contentPadding:
+            const EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+
+        //title
+        title: const Row(
+          children: [
+            Icon(
+              Icons.person_add,
+              color: primaryLightColor,
+              size: 28,
+            ),
+            Text('  Add User')
+          ],
+        ),
+
+        //content
+        content: TextFormField(
+          maxLines: null,
+          onChanged: (value) => email = value,
+          decoration: InputDecoration(
+            hintText: 'Email Id',
+            prefixIcon: const Icon(Icons.email, color: primaryLightColor),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+        ),
+
+        //actions
+        actions: [
+          //cancel button
+          MaterialButton(
+            onPressed: () {
+              //hide alert dialog
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: primaryLightColor, fontSize: 16),
+            ),
+          ),
+
+          //add button
+          MaterialButton(
+            onPressed: () async {
+              //hide alert dialog
+              Navigator.pop(context);
+              if (email.isNotEmpty) {
+                await APIs.addChatUser(email).then((value) {
+                  if (!value) {
+                    Dialogs.showSnackbar(
+                      context,
+                      'User does not Exists!',
+                    );
+                  }
+                });
+              }
+            },
+            child: const Text(
+              'Add',
+              style: TextStyle(color: primaryLightColor, fontSize: 16),
+            ),
+          )
+        ],
       ),
     );
   }

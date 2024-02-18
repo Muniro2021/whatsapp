@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uct_chat/features/user_statistics_feature/data/statistic_data_api.dart';
 import 'package:uct_chat/features/user_statistics_feature/widgets/data_counter.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
+import 'package:uct_chat/main.dart';
 
 class LeavesCard extends StatelessWidget {
   const LeavesCard({
@@ -19,21 +21,23 @@ class LeavesCard extends StatelessWidget {
       children: [
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width/4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FaIcon(
                   FontAwesomeIcons.solidClock,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: seconderyLightColor,
                   future: StatisticDataAPI.getMyHourlyLeaves(year, month),
                 ),
                 const Text(
                   "Hourly",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),
@@ -41,21 +45,23 @@ class LeavesCard extends StatelessWidget {
         ),
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width/4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FaIcon(
                   FontAwesomeIcons.lungsVirus,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: seconderyLightColor,
                   future: StatisticDataAPI.getMySickLeaves(year, month),
                 ),
                 const Text(
                   "Sick",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),
@@ -63,21 +69,23 @@ class LeavesCard extends StatelessWidget {
         ),
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width/4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FaIcon(
                   FontAwesomeIcons.calendar,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: seconderyLightColor,
                   future: StatisticDataAPI.getMyAnnualLeaves(year, month),
                 ),
                 const Text(
                   "Annual",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),
@@ -85,21 +93,23 @@ class LeavesCard extends StatelessWidget {
         ),
         Card(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
+            width: mq.width/4.5,
+            height: 110,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FaIcon(
                   FontAwesomeIcons.moneyBill,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: seconderyLightColor,
                   future: StatisticDataAPI.getMyUnpaidLeaves(year, month),
                 ),
                 const Text(
                   "Unpaid",
-                  style: TextStyle(fontFamily: 'Unna', fontSize: 20),
+                  style: TextStyle(fontFamily: 'Unna', fontSize: 15),
                 ),
               ],
             ),

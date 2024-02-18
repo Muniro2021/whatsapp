@@ -11,6 +11,7 @@ import 'package:uct_chat/features/login_feature/cubit/login_screen_cubit.dart';
 import 'package:uct_chat/features/login_feature/widgets/role_card.dart';
 import 'package:uct_chat/features/user_home_feature/home_screen.dart';
 import 'package:uct_chat/helper/dialogs.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class UsersType extends StatefulWidget {
   const UsersType({super.key});
@@ -144,10 +145,13 @@ class _UsersTypeState extends State<UsersType> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Admin Access'),
+          title: const Text('Admin Access', style: TextStyle(color: primaryLightColor,fontFamily: 'Unna'),),
           content: Form(
             key: key,
             child: TextFormField(
+              style: const TextStyle(
+                fontFamily: 'Unna'
+              ),
               validator: (value) {
                 if (value != password) {
                   return "Wrong Password";
@@ -159,18 +163,29 @@ class _UsersTypeState extends State<UsersType> {
               },
               decoration: const InputDecoration(
                 hintText: "Enter Password",
+                
+                hintStyle: TextStyle(fontFamily: 'Unna'),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: primaryLightColor),
+                ),
               ),
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: const Text(
+                'Close',
+                style: TextStyle(color: primaryLightColor,fontFamily: 'Unna'),
+              ),
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
               },
             ),
             TextButton(
-              child: const Text('Submit'),
+              child: const Text(
+                'Submit',
+                style: TextStyle(color: primaryLightColor,fontFamily: 'Unna'),
+              ),
               onPressed: () {
                 if (key.currentState!.validate()) {
                   _handleGoogleBtnClick(1);

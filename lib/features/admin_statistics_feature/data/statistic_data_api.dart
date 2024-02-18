@@ -168,7 +168,7 @@ class StatisticDataAPI {
     }
     final hours = (totalHours.inHours % 24).toString().padLeft(2, '0');
     final minutes = (totalHours.inMinutes % 60).toString().padLeft(2, '0');
-    final totalFormatted = '$hours:$minutes hours';
+    final totalFormatted = '$hours:$minutes';
     return totalFormatted;
   }
 
@@ -249,7 +249,7 @@ class StatisticDataAPI {
 
     var x = sickDays + annualDays + unpaidDays;
 
-    final TotalFormatted = '$x days';
+    final TotalFormatted = '$x';
 
     return TotalFormatted;
   }

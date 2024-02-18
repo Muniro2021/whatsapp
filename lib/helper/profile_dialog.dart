@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:uct_chat/features/done_features/view_profile_feature/view_profile.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 import '../main.dart';
 import '../models/chat_user.dart';
-import '../features/view_profile_screen/view_profile_screen.dart';
 
 class ProfileDialog extends StatelessWidget {
   const ProfileDialog({super.key, required this.user});
@@ -67,7 +68,7 @@ class ProfileDialog extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ViewProfileScreen(user: user),
+                          builder: (_) => ViewProfile(user: user),
                         ),
                       );
                     },
@@ -76,7 +77,7 @@ class ProfileDialog extends StatelessWidget {
                     shape: const CircleBorder(),
                     child: const Icon(
                       Icons.info_outline,
-                      color: Colors.blue,
+                      color: primaryLightColor,
                       size: 30,
                     ),
                   ))

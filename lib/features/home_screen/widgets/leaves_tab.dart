@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/create_leave_screen/create_leave_screen.dart';
 import 'package:uct_chat/features/home_screen/widgets/leave_card.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/main.dart';
 import 'package:uct_chat/models/leave_apply.dart';
 
@@ -40,7 +41,7 @@ class _LeavesTabState extends State<LeavesTab> {
               backgroundColor: Colors.white,
               child: const Icon(
                 Icons.add,
-                color: Colors.blue,
+                color: primaryLightColor,
               ),
             )
           : null,

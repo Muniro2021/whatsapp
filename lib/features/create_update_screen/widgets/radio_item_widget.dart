@@ -16,13 +16,14 @@ class RadioItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         color: item.isSelected ? item.color : Colors.transparent,
       ),
-      margin: const EdgeInsets.only(right: 10.0),
+      // margin: const EdgeInsets.symmetric(horizontal: 5),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           SizedBox(
             height: 15.0,
-            width: 30.0,
+            width: 40.0,
             child: Center(
               child: FaIcon(
                 item.buttonIon,
@@ -38,6 +39,7 @@ class RadioItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 color: item.isSelected ? Colors.white : item.color,
+                fontFamily: 'Unna'
               ),
             ),
           )

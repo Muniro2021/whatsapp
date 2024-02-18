@@ -7,6 +7,7 @@ import 'package:uct_chat/features/call_screen/call_screen.dart';
 import 'package:uct_chat/features/home_screen/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/home_screen/widgets/chat_user_card.dart';
 import 'package:uct_chat/helper/dialogs.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/main.dart';
 import 'package:uct_chat/models/chat_user.dart';
 
@@ -156,7 +157,7 @@ class _ChatsTabState extends State<ChatsTab> {
                     Bubble(
                       title: "Group Call",
                       iconColor: Colors.white,
-                      bubbleColor: Colors.blue,
+                      bubbleColor: primaryLightColor,
                       icon: Icons.call,
                       titleStyle:
                           const TextStyle(fontSize: 16, color: Colors.white),
@@ -268,7 +269,7 @@ class _ChatsTabState extends State<ChatsTab> {
                               children: [
                                 Icon(
                                   Icons.person_add,
-                                  color: Colors.blue,
+                                  color: primaryLightColor,
                                   size: 28,
                                 ),
                                 Text('  Add User')
@@ -282,7 +283,7 @@ class _ChatsTabState extends State<ChatsTab> {
                               decoration: InputDecoration(
                                 hintText: 'Email Id',
                                 prefixIcon:
-                                    const Icon(Icons.email, color: Colors.blue),
+                                    const Icon(Icons.email, color: primaryLightColor),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -299,7 +300,7 @@ class _ChatsTabState extends State<ChatsTab> {
                                   },
                                   child: const Text('Cancel',
                                       style: TextStyle(
-                                          color: Colors.blue, fontSize: 16))),
+                                          color: primaryLightColor, fontSize: 16))),
 
                               //add button
                               MaterialButton(
@@ -318,7 +319,7 @@ class _ChatsTabState extends State<ChatsTab> {
                                 child: const Text(
                                   'Add',
                                   style: TextStyle(
-                                      color: Colors.blue, fontSize: 16),
+                                      color: primaryLightColor, fontSize: 16),
                                 ),
                               )
                             ],

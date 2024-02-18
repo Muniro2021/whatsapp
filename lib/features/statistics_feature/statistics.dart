@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uct_chat/features/statistics_feature/data/statistic_data_api.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class Statistic extends StatefulWidget {
   const Statistic({super.key});
@@ -198,10 +199,10 @@ class UpdatesCard extends StatelessWidget {
               children: [
                 FaIcon(
                   FontAwesomeIcons.circleInfo,
-                  color: Colors.blue.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.blue,
+                  color: primaryLightColor,
                   future: StatisticDataAPI.getMyInfoUpdates(month),
                 ),
                 const Text(
@@ -220,10 +221,10 @@ class UpdatesCard extends StatelessWidget {
               children: [
                 FaIcon(
                   FontAwesomeIcons.solidBell,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: primaryLightColor,
                   future: StatisticDataAPI.getMyWarninigUpdates(month),
                 ),
                 const Text(
@@ -303,10 +304,10 @@ class LeavesCard extends StatelessWidget {
               children: [
                 FaIcon(
                   FontAwesomeIcons.solidClock,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: primaryLightColor,
                   future: StatisticDataAPI.getMyHourlyLeaves(month),
                 ),
                 const Text(
@@ -325,10 +326,10 @@ class LeavesCard extends StatelessWidget {
               children: [
                 FaIcon(
                   FontAwesomeIcons.lungsVirus,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: primaryLightColor,
                   future: StatisticDataAPI.getMySickLeaves(month),
                 ),
                 const Text(
@@ -347,10 +348,10 @@ class LeavesCard extends StatelessWidget {
               children: [
                 FaIcon(
                   FontAwesomeIcons.calendar,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: primaryLightColor,
                   future: StatisticDataAPI.getMyAnnualLeaves(month),
                 ),
                 const Text(
@@ -369,10 +370,10 @@ class LeavesCard extends StatelessWidget {
               children: [
                 FaIcon(
                   FontAwesomeIcons.moneyBill,
-                  color: Colors.orange.withOpacity(0.4),
+                  color: primaryLightColor.withOpacity(0.4),
                 ),
                 DataCounter(
-                  color: Colors.orange,
+                  color: primaryLightColor,
                   future: StatisticDataAPI.getMyUnpaidLeaves(month),
                 ),
                 const Text(

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class Dialogs {
   static void showSnackbar(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           content: Text(msg),
-          backgroundColor: Colors.blue.withOpacity(.8),
+          backgroundColor: primaryLightColor.withOpacity(.8),
           behavior: SnackBarBehavior.floating),
     );
   }

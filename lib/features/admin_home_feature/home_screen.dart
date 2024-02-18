@@ -9,7 +9,8 @@ import 'package:uct_chat/features/admin_home_feature/widgets/chats_tab.dart';
 import 'package:uct_chat/features/admin_home_feature/widgets/leaves_tab.dart';
 import 'package:uct_chat/features/admin_home_feature/widgets/updates_tab.dart';
 import 'package:uct_chat/features/admin_statistics_feature/statistics.dart';
-import 'package:uct_chat/features/profile_screen/profile_screen.dart';
+import 'package:uct_chat/features/done_features/view_profile_feature/view_profile.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 import '../../api/apis.dart';
 
@@ -29,7 +30,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen>
   void initState() {
     initAnimation();
     super.initState();
-    APIs.getSelfInfo(APIs.me.role);
+    APIs.getSelfInfo(1);
     viewMode();
   }
 
@@ -44,7 +45,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen>
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
-                indicatorColor: Colors.orange,
+                indicatorColor: primaryLightColor,
                 tabs: [
                   Tab(
                     child: DefaultTextStyle(
@@ -85,12 +86,13 @@ class _AdminHomeScreenState extends State<AdminHomeScreen>
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(user: APIs.me),
+                          builder: (context) => ViewProfile(user: APIs.me),
                         ),
                       );
                     },
                     child: Container(
                       width: 50,
+                      height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -103,15 +105,19 @@ class _AdminHomeScreenState extends State<AdminHomeScreen>
                       ),
                     ),
                   ),
-                  const Text(
-                    'UCT Chat',
-                    style: TextStyle(
-                      fontFamily: 'Unna',
-                      fontSize: 30,
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Image.asset(
+                    'assets/images/UCT.gif',
+                    height: 60,
                   ),
+                  // const Text(
+                  //   'UCT Chat',
+                  //   style: TextStyle(
+                  //     fontFamily: 'Unna',
+                  //     fontSize: 30,
+                  //     color: primaryLightColor,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
                   PopupMenuButton<String>(
                     onSelected: (value) {
                       if (value == 'admin_statistics') {
@@ -126,7 +132,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen>
                       // Show only for admin role
                       const PopupMenuItem<String>(
                         value: 'admin_statistics',
-                        child: Text('Admin Statistics'),
+                        child: Text(
+                          'Users',
+                          style: TextStyle(fontFamily: 'Unna'),
+                        ),
                       ),
                     ],
                     icon: const Icon(Icons.more_vert),

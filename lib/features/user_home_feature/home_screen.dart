@@ -4,12 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uct_chat/features/profile_screen/profile_screen.dart';
+import 'package:uct_chat/features/done_features/view_profile_feature/view_profile.dart';
 import 'package:uct_chat/features/user_home_feature/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/chats_tab.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/leaves_tab.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/updates_tab.dart';
 import 'package:uct_chat/features/user_statistics_feature/statistics.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 import '../../api/apis.dart';
 
@@ -29,7 +30,7 @@ class _UserHomeScreenState extends State<UserHomeScreen>
   void initState() {
     initAnimation();
     super.initState();
-    APIs.getSelfInfo(APIs.me.role);
+    APIs.getSelfInfo(0);
     viewMode();
   }
 
@@ -44,7 +45,7 @@ class _UserHomeScreenState extends State<UserHomeScreen>
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
-                indicatorColor: Colors.orange,
+                indicatorColor: primaryLightColor,
                 tabs: [
                   Tab(
                     child: DefaultTextStyle(
@@ -85,12 +86,14 @@ class _UserHomeScreenState extends State<UserHomeScreen>
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(user: APIs.me),
+                          builder: (context) =>
+                              ViewProfile(user: APIs.me),
                         ),
                       );
                     },
                     child: Container(
                       width: 50,
+                      height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -103,14 +106,9 @@ class _UserHomeScreenState extends State<UserHomeScreen>
                       ),
                     ),
                   ),
-                  const Text(
-                    'UCT Chat',
-                    style: TextStyle(
-                      fontFamily: 'Unna',
-                      fontSize: 30,
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
+                 Image.asset(
+                    'assets/images/UCT.gif',
+                    height: 60,
                   ),
                   PopupMenuButton<String>(
                     onSelected: (value) {

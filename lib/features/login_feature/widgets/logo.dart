@@ -9,9 +9,9 @@ class Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom:  mq.height/ 16, top: mq.height/ 16),
+      margin: EdgeInsets.only(bottom:  mq.height/ 14, top: mq.height/ 6),
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Image.asset("assets/images/uct.png"),
+      child: Image.asset("assets/images/UCT.gif", width: 200,),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/chat_screen/cubit/chat_screen_cubit.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/main.dart';
 import 'package:uct_chat/models/chat_user.dart';
 import 'package:uct_chat/models/message.dart';
@@ -46,7 +48,7 @@ class MessageInput extends StatelessWidget {
                         },
                         icon: const Icon(
                           Icons.emoji_emotions,
-                          color: Colors.blueAccent,
+                          color: primaryLightColor,
                           size: 25,
                         ),
                       ),
@@ -64,7 +66,7 @@ class MessageInput extends StatelessWidget {
                           decoration: const InputDecoration(
                             hintText: 'Type Something...',
                             hintStyle: TextStyle(
-                              color: Colors.blueAccent,
+                              color: primaryLightColor,
                               fontFamily: 'Unna',
                             ),
                             border: InputBorder.none,
@@ -77,7 +79,7 @@ class MessageInput extends StatelessWidget {
                         },
                         icon: const Icon(
                           Icons.attach_file,
-                          color: Colors.blue,
+                          color: primaryLightColor,
                         ),
                       ),
                       //pick image from gallery button
@@ -103,7 +105,7 @@ class MessageInput extends StatelessWidget {
                         },
                         icon: Icon(
                           chatScreenCubit.timer ? Icons.stop : Icons.mic,
-                          color: Colors.blue,
+                          color: primaryLightColor,
                         ),
                       ),
                       //adding some space
@@ -160,7 +162,7 @@ class MessageInput extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           top: 10, bottom: 10, right: 5, left: 10),
                       shape: const CircleBorder(),
-                      color: Colors.green,
+                      color: primaryLightColor,
                       child: const Icon(
                         Icons.send,
                         color: Colors.white,
@@ -199,7 +201,10 @@ class MessageInput extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        title: const Text('Upload File'),
+        title: const Text(
+          'Upload File',
+          style: TextStyle(fontFamily: 'Unna'),
+        ),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -224,7 +229,7 @@ class MessageInput extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.image,
-                color: Colors.blueAccent,
+                color: primaryLightColor,
                 size: 26,
               ),
             ),
@@ -251,7 +256,7 @@ class MessageInput extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.camera_alt_rounded,
-                color: Colors.blueAccent,
+                color: primaryLightColor,
                 size: 26,
               ),
             ),
@@ -275,7 +280,7 @@ class MessageInput extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.audiotrack,
-                color: Colors.blueAccent,
+                color: primaryLightColor,
                 size: 26,
               ),
             ),
@@ -298,33 +303,43 @@ class MessageInput extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.ondemand_video,
-                color: Colors.blueAccent,
+                color: primaryLightColor,
                 size: 26,
               ),
             ),
             IconButton(
               onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  type: FileType.custom,
-                  allowMultiple: true,
-                  allowedExtensions: ['pdf', 'doc', 'pptx'],
-                );
-                Navigator.pop(context);
-                if (result != null) {
-                  var file = result.files.single.path!;
-                  print("file: ----- $file");
-                  chatScreenCubit.changeIsUploading();
-                  print("file: $file");
-                  await APIs.sendChatDoc(
-                    user,
-                    File(file),
-                  );
-                  chatScreenCubit.changeIsUploading();
-                }
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.info,
+                  animType: AnimType.rightSlide,
+                  title: 'Comming Soon..',
+                  desc: 'Under Maintain',
+                  btnCancelOnPress: () {
+                    // Navigator.pop(context);
+                  },
+                ).show();
+                // FilePickerResult? result = await FilePicker.platform.pickFiles(
+                //   type: FileType.custom,
+                //   allowMultiple: true,
+                //   allowedExtensions: ['pdf', 'doc', 'pptx'],
+                // );
+                // Navigator.pop(context);
+                // if (result != null) {
+                //   var file = result.files.single.path!;
+                //   print("file: ----- $file");
+                //   chatScreenCubit.changeIsUploading();
+                //   print("file: $file");
+                //   await APIs.sendChatDoc(
+                //     user,
+                //     File(file),
+                //   );
+                //   chatScreenCubit.changeIsUploading();
+                // }
               },
               icon: const Icon(
                 Icons.file_copy,
-                color: Colors.blueAccent,
+                color: primaryLightColor,
                 size: 26,
               ),
             ),
@@ -338,9 +353,7 @@ class MessageInput extends StatelessWidget {
             child: const Text(
               'Cancel',
               style: TextStyle(
-                color: Colors.blue,
-                fontSize: 16,
-              ),
+                  color: primaryLightColor, fontSize: 16, fontFamily: 'Unna'),
             ),
           ),
 

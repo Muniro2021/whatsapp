@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lottie/lottie.dart';
 import 'package:uct_chat/features/admin_home_feature/home_screen.dart';
 import 'package:uct_chat/features/login_feature/login_screen.dart';
 import 'package:uct_chat/features/user_home_feature/home_screen.dart';

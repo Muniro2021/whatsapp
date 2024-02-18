@@ -21,6 +21,7 @@ class DataCounter extends StatelessWidget {
               fontSize: 30,
               fontWeight: FontWeight.bold,
               color: color,
+              fontFamily: 'Unna'
             ),
           );
         }

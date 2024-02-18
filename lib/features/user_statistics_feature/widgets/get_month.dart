@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class GetMonth extends StatelessWidget {
   const GetMonth({super.key, required this.month, required this.color});
@@ -43,11 +44,11 @@ class GetMonth extends StatelessWidget {
               child: Text(
             data,
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 20,
               fontFamily: 'Unna',
               color: color
-                  ? Colors.deepOrange
-                  : Colors.deepOrange.withOpacity(0.5),
+                  ? primaryLightColor
+                  : seconderyLightColor,
             ),
           )),
         ),

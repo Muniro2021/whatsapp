@@ -32,7 +32,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 ? "Users"
                 : widget.username!,
             style: const TextStyle(
-              fontSize: 40,
+              fontSize: 25,
               fontWeight: FontWeight.bold,
               fontFamily: 'Unna',
             ),

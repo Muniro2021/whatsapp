@@ -3,6 +3,7 @@ import 'package:uct_chat/features/user_statistics_feature/widgets/custom_app_bar
 import 'package:uct_chat/features/user_statistics_feature/widgets/get_month.dart';
 import 'package:uct_chat/features/user_statistics_feature/widgets/leaves_card.dart';
 import 'package:uct_chat/features/user_statistics_feature/widgets/updates_card.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class UserStatistic extends StatefulWidget {
   const UserStatistic({super.key});
@@ -64,7 +65,7 @@ class _UserStatisticState extends State<UserStatistic> {
                                     child: Text(
                                       "Leaves",
                                       style: TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 20,
                                         fontFamily: 'Unna',
                                       ),
                                     ),
@@ -81,7 +82,7 @@ class _UserStatisticState extends State<UserStatistic> {
                                     child: Text(
                                       "Updates",
                                       style: TextStyle(
-                                          fontSize: 30, fontFamily: 'Unna'),
+                                          fontSize: 20, fontFamily: 'Unna'),
                                     ),
                                   ),
                                 ),
@@ -127,7 +128,7 @@ class _UserStatisticState extends State<UserStatistic> {
           items: <String>['2023', '2024', '2025'].map((String year) {
             return DropdownMenuItem<String>(
               value: year,
-              child: Text(year),
+              child: Text(year, style: const TextStyle(color: primaryLightColor, fontFamily: 'Unna'),),
             );
           }).toList(),
         ),

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:uct_chat/features/chat_screen/widgets/pdf_viewer.dart';
 import 'package:uct_chat/helper/image_viewer.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/models/chat_user.dart';
 import 'package:video_player/video_player.dart';
 
@@ -331,7 +332,7 @@ class _MessageCardState extends State<MessageCard> {
             if (widget.message.read.isNotEmpty)
               const Icon(
                 Icons.done_all_rounded,
-                color: Colors.blue,
+                color: primaryLightColor,
                 size: 20,
               ),
 
@@ -355,7 +356,7 @@ class _MessageCardState extends State<MessageCard> {
           clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
           alignment: Alignment.topRight,
           margin: const EdgeInsets.only(top: 20),
-          backGroundColor: Colors.orange.withOpacity(0.8),
+          backGroundColor: primaryLightColor.withOpacity(0.8),
           child: Container(
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.7,
@@ -585,7 +586,7 @@ class _MessageCardState extends State<MessageCard> {
                   //copy option
                   _OptionItem(
                       icon: const Icon(Icons.copy_all_rounded,
-                          color: Colors.blue, size: 26),
+                          color: primaryLightColor, size: 26),
                       name: 'Copy Text',
                       onTap: () async {
                         await Clipboard.setData(
@@ -602,7 +603,7 @@ class _MessageCardState extends State<MessageCard> {
                       ? _OptionItem(
                           icon: const Icon(
                             Icons.download_rounded,
-                            color: Colors.blue,
+                            color: primaryLightColor,
                             size: 26,
                           ),
                           name: 'Save Image',
@@ -628,7 +629,7 @@ class _MessageCardState extends State<MessageCard> {
                           ? _OptionItem(
                               icon: const Icon(
                                 Icons.download_rounded,
-                                color: Colors.blue,
+                                color: primaryLightColor,
                                 size: 26,
                               ),
                               name: 'Download Audio',
@@ -652,7 +653,7 @@ class _MessageCardState extends State<MessageCard> {
                               ? _OptionItem(
                                   icon: const Icon(
                                     Icons.download_rounded,
-                                    color: Colors.blue,
+                                    color: primaryLightColor,
                                     size: 26,
                                   ),
                                   name: 'Download Document',
@@ -677,7 +678,7 @@ class _MessageCardState extends State<MessageCard> {
                               : _OptionItem(
                                   icon: const Icon(
                                     Icons.download_rounded,
-                                    color: Colors.blue,
+                                    color: primaryLightColor,
                                     size: 26,
                                   ),
                                   name: 'Download Video',
@@ -712,7 +713,7 @@ class _MessageCardState extends State<MessageCard> {
               //edit option
               if (widget.message.type == Type.text && isMe)
                 _OptionItem(
-                    icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
+                    icon: const Icon(Icons.edit, color: primaryLightColor, size: 26),
                     name: 'Edit Message',
                     onTap: () {
                       //for hiding bottom sheet
@@ -743,7 +744,7 @@ class _MessageCardState extends State<MessageCard> {
 
               //sent time
               _OptionItem(
-                  icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
+                  icon: const Icon(Icons.remove_red_eye, color: primaryLightColor),
                   name:
                       'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
@@ -777,7 +778,7 @@ class _MessageCardState extends State<MessageCard> {
           children: [
             Icon(
               Icons.message,
-              color: Colors.blue,
+              color: primaryLightColor,
               size: 28,
             ),
             Text(' Update Message')
@@ -804,7 +805,7 @@ class _MessageCardState extends State<MessageCard> {
               },
               child: const Text(
                 'Cancel',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
+                style: TextStyle(color: primaryLightColor, fontSize: 16),
               )),
 
           //update button
@@ -816,7 +817,7 @@ class _MessageCardState extends State<MessageCard> {
             },
             child: const Text(
               'Update',
-              style: TextStyle(color: Colors.blue, fontSize: 16),
+              style: TextStyle(color: primaryLightColor, fontSize: 16),
             ),
           )
         ],

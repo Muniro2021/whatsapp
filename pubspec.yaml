@@ -80,6 +80,7 @@ dependencies:
   rive: ^0.12.4
 
   zego_express_engine: ^3.11.0
+  draggable_bottom_sheet: ^1.0.2
 
 dev_dependencies:
   flutter_test:

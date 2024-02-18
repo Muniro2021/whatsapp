@@ -17,6 +17,7 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: const TextStyle(fontFamily: 'Unna'),
       controller: controller,
       textAlign: TextAlign.start,
       textAlignVertical: TextAlignVertical.top,

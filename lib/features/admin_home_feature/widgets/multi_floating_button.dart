@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/login_feature/login_screen.dart';
+import 'package:uct_chat/helper/utils/constant.dart';
 
 class MultiFloatingButton extends StatelessWidget {
   const MultiFloatingButton({
@@ -22,7 +23,7 @@ class MultiFloatingButton extends StatelessWidget {
         Bubble(
           title: "Group Call",
           iconColor: Colors.white,
-          bubbleColor: Colors.blue,
+          bubbleColor: primaryLightColor,
           icon: Icons.call,
           titleStyle: const TextStyle(fontSize: 16, color: Colors.white),
           onPress: () {},
