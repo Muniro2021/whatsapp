@@ -7,8 +7,11 @@ import 'package:uct_chat/features/admin_statistics_feature/widgets/updates_card.
 import 'package:uct_chat/helper/utils/constant.dart';
 
 class UserStatisticFromAdmin extends StatefulWidget {
-  const UserStatisticFromAdmin(
-      {super.key, required this.userId, required this.username});
+  const UserStatisticFromAdmin({
+    super.key,
+    required this.userId,
+    required this.username,
+  });
   final String userId;
   final String username;
 
@@ -24,7 +27,7 @@ class _UserStatisticFromAdminState extends State<UserStatisticFromAdmin> {
   @override
   void initState() {
     selectedMonth = -1;
-    selectedYear = DateTime.now().year.toString();
+    selectedYear = DateTime.now().toLocal().year.toString();
     super.initState();
   }
 
@@ -182,10 +185,10 @@ class _UserStatisticFromAdminState extends State<UserStatisticFromAdmin> {
                                                       Text(
                                                         leaveDays!,
                                                         style: const TextStyle(
-                                                          fontFamily: 'Unna',
-                                                          fontSize: 20,
-                                                    color: primaryLightColor
-                                                        ),
+                                                            fontFamily: 'Unna',
+                                                            fontSize: 20,
+                                                            color:
+                                                                primaryLightColor),
                                                       ),
                                                       const Text(
                                                         ' days',

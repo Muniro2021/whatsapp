@@ -8,7 +8,8 @@ class UpdatesCard extends StatelessWidget {
   const UpdatesCard({
     super.key,
     required this.month,
-    required this.year, required this.userId,
+    required this.year,
+    required this.userId,
   });
   final int month;
   final String year;
@@ -33,7 +34,8 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 DataCounter(
                   color: Colors.blue,
-                  future: StatisticDataAPI.getUserInfoUpdates(year, month, userId),
+                  future: StatisticDataAPI.getSpecificMonthlyUpdates(
+                      year, month, userId, "blue"),
                 ),
                 const Text(
                   "Info",
@@ -57,7 +59,8 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 DataCounter(
                   color: Colors.orange,
-                  future: StatisticDataAPI.getUserWarninigUpdates(year, month, userId),
+                  future: StatisticDataAPI.getSpecificMonthlyUpdates(
+                      year, month, userId, "orange"),
                 ),
                 const Text(
                   "Warning",
@@ -81,7 +84,8 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 DataCounter(
                   color: Colors.red,
-                  future: StatisticDataAPI.getUserUrgentUpdates(year, month, userId),
+                  future: StatisticDataAPI.getSpecificMonthlyUpdates(
+                      year, month, userId, "red"),
                 ),
                 const Text(
                   "Urgent",
@@ -105,7 +109,8 @@ class UpdatesCard extends StatelessWidget {
                 ),
                 DataCounter(
                   color: Colors.green,
-                  future: StatisticDataAPI.getUserGoodUpdates(year, month, userId),
+                  future: StatisticDataAPI.getSpecificMonthlyUpdates(
+                      year, month, userId, "green"),
                 ),
                 const Text(
                   "Good",

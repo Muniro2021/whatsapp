@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/create_update_screen/create_update_screen.dart';
+import 'package:uct_chat/features/create_update_screen/edit_update_screen.dart';
 import 'package:uct_chat/main.dart';
 import 'package:uct_chat/models/update_message.dart';
 import 'package:intl/intl.dart';
@@ -79,9 +80,8 @@ class _AdminUpdatesTabState extends State<AdminUpdatesTab> {
                         );
                       } else {
                         return Center(
-                          child: Lottie.asset(
-                            'assets/lotties/empty_update.json'
-                          ),
+                          child:
+                              Lottie.asset('assets/lotties/empty_update.json'),
                         );
                       }
                   }
@@ -112,38 +112,52 @@ class _UpdateAlertState extends State<UpdateAlert> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: Card(
-        child: SizedBox(
-          height: isContentVisible ? null : 60,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    isContentVisible = !isContentVisible;
-                  });
-                },
-                child: ContainerBoxTime(
-                  time: widget.updateMessages.time,
-                  color: widget.updateMessages.color,
-                  mention: widget.updateMessages.mention,
+      child: InkWell(
+        child: Card(
+          child: SizedBox(
+            height: isContentVisible ? null : 70,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      isContentVisible = !isContentVisible;
+                    });
+                  },
+                  onLongPress: () {
+                    APIs.me.role == 1
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditUpdateScreen(
+                                updateMessages: widget.updateMessages,
+                              ),
+                            ),
+                          )
+                        : null;
+                  },
+                  child: ContainerBoxTime(
+                    time: widget.updateMessages.time,
+                    color: widget.updateMessages.color,
+                    mention: widget.updateMessages.mention,
+                  ),
                 ),
-              ),
-              if (isContentVisible) ...[
-                ContainerBox(
-                  text: widget.updateMessages.subject,
-                  title: 'Subject: ',
-                  color: widget.updateMessages.color,
-                ),
-                ContainerBox(
-                  text: widget.updateMessages.body,
-                  title: 'Body: ',
-                  color: widget.updateMessages.color,
-                ),
-              ]
-            ],
+                if (isContentVisible) ...[
+                  ContainerBox(
+                    text: widget.updateMessages.subject,
+                    title: 'Subject: ',
+                    color: widget.updateMessages.color,
+                  ),
+                  ContainerBox(
+                    text: widget.updateMessages.body,
+                    title: 'Body: ',
+                    color: widget.updateMessages.color,
+                  ),
+                ]
+              ],
+            ),
           ),
         ),
       ),
@@ -222,13 +236,13 @@ class ContainerBoxTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    final dateTime = DateTime.parse(time).toLocal();
     final formattedDate = DateFormat('MMMM d, EEEE').format(dateTime);
     final formattedTime = DateFormat('HH:mm').format(dateTime);
     return Container(
       padding: const EdgeInsets.all(5),
       width: double.infinity,
-      height: 60,
+      height: 70,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.3),
@@ -298,16 +312,20 @@ class ContainerBoxTime extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.only(right: 10),
-                child: Text(
-                  formattedTime,
-                  style: const TextStyle(
-                    height: 1,
-                    fontFamily: 'Unna',
-                    color: Colors.black,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Text(
+                      formattedTime,
+                      style: const TextStyle(
+                        height: 1,
+                        fontFamily: 'Unna',
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),

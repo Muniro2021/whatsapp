@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -309,33 +308,23 @@ class MessageInput extends StatelessWidget {
             ),
             IconButton(
               onPressed: () async {
-                AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.info,
-                  animType: AnimType.rightSlide,
-                  title: 'Comming Soon..',
-                  desc: 'Under Maintain',
-                  btnCancelOnPress: () {
-                    // Navigator.pop(context);
-                  },
-                ).show();
-                // FilePickerResult? result = await FilePicker.platform.pickFiles(
-                //   type: FileType.custom,
-                //   allowMultiple: true,
-                //   allowedExtensions: ['pdf', 'doc', 'pptx'],
-                // );
-                // Navigator.pop(context);
-                // if (result != null) {
-                //   var file = result.files.single.path!;
-                //   print("file: ----- $file");
-                //   chatScreenCubit.changeIsUploading();
-                //   print("file: $file");
-                //   await APIs.sendChatDoc(
-                //     user,
-                //     File(file),
-                //   );
-                //   chatScreenCubit.changeIsUploading();
-                // }
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  type: FileType.custom,
+                  allowMultiple: true,
+                  allowedExtensions: ['pdf', 'doc', 'pptx', 'docx'],
+                );
+                Navigator.pop(context);
+                if (result != null) {
+                  var file = result.files.single.path!;
+                  print("file: ----- $file");
+                  chatScreenCubit.changeIsUploading();
+                  print("file: $file");
+                  await APIs.sendChatDoc(
+                    user,
+                    File(file),
+                  );
+                  chatScreenCubit.changeIsUploading();
+                }
               },
               icon: const Icon(
                 Icons.file_copy,

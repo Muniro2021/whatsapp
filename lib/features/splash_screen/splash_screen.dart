@@ -12,6 +12,7 @@ import '../../api/apis.dart';
 //splash screen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+  
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -26,8 +27,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final message = ModalRoute.of(context)!.settings.arguments;
     //initializing media query (for getting device screen size)
     mq = MediaQuery.of(context).size;
+    print(message.toString());
     return Scaffold(
       //body
       body: Center(

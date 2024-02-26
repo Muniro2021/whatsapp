@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:uct_chat/helper/utils/constant.dart';
 
 class DataBox extends StatelessWidget {
-  const DataBox({
+ DataBox({
     super.key,
     required this.text,
     required this.color,
     required this.verticalPadding,
     required this.horizontalPadding,
     this.rating,
+    this.onTap
   });
   final String text;
   final Color color;
   final double verticalPadding;
   final double horizontalPadding;
   final int? rating;
+  void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +43,17 @@ class DataBox extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                 ),
               )
-            : Text(
-                text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: whiteColor,
-                  fontFamily: 'Unna',
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
+            : InkWell(
+                onTap: onTap,
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: whiteColor,
+                    fontFamily: 'Unna',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
       ),

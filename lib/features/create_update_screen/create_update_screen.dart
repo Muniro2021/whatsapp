@@ -12,6 +12,7 @@ import 'package:uct_chat/models/users_name.dart';
 
 class CreateUpdateScreen extends StatefulWidget {
   const CreateUpdateScreen({super.key});
+  static const route = '/splash_screen';
 
   @override
   State<CreateUpdateScreen> createState() => _CreateUpdateScreenState();
@@ -21,6 +22,7 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
   GlobalKey<FormState> key = GlobalKey();
   late TextEditingController idMention;
   late TextEditingController mention;
+  late TextEditingController pushTokenMention;
   late TextEditingController subject;
   late TextEditingController body;
   late TextEditingController color;
@@ -35,6 +37,7 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
     super.initState();
     idMention = TextEditingController();
     mention = TextEditingController();
+    pushTokenMention = TextEditingController();
     subject = TextEditingController();
     body = TextEditingController();
     color = TextEditingController();
@@ -80,6 +83,7 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
   @override
   void dispose() {
     idMention.dispose();
+    pushTokenMention.dispose();
     mention.dispose();
     subject.dispose();
     body.dispose();
@@ -95,9 +99,9 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
       for (int i = 0; i < usersData.length; i++) {
         dropdownlist.add(
           SelectedListItem(
-            name: usersData[i].name!,
-            value: usersData[i].id,
-          ),
+              name: usersData[i].name!,
+              value: usersData[i].pushToken,
+              id: usersData[i].id),
         );
       }
     }
@@ -145,7 +149,6 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
                   child: Row(
                     children: [
                       Radio(
-                        // title: const Text('Danger'),
                         value: 'everyone',
                         groupValue: selectedMention,
                         onChanged: (value) {
@@ -156,7 +159,10 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
                       ),
                       const Text(
                         'All Users',
-                        style: TextStyle(fontFamily: 'Unna', fontSize: 20,),
+                        style: TextStyle(
+                          fontFamily: 'Unna',
+                          fontSize: 20,
+                        ),
                       ),
                     ],
                   ),
@@ -169,7 +175,6 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
                   child: Row(
                     children: [
                       Radio(
-                        // title: const Text('Warrning'),
                         value: 'certain',
                         groupValue: selectedMention,
                         onChanged: (value) {
@@ -194,6 +199,7 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
                     dropdownSelectedName: mention,
                     listdata: dropdownlist,
                     title: 'Users',
+                    dropdownSelectedPushToken: pushTokenMention,
                   ),
             const SizedBox(
               height: 20,
@@ -245,14 +251,13 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
               onTap: () async {
                 if (key.currentState!.validate()) {
                   await APIs.createUpdate(
-                      selectedMention == "everyone" ? "everyone" : mention.text,
-                      subject.text,
-                      body.text,
-                      selectedColor!,
-                      selectedMention == "everyone"
-                          ? "everyone"
-                          : idMention.text,
-                      (APIs.getPushToken(idMention.text)).toString());
+                    selectedMention == "everyone" ? "everyone" : mention.text,
+                    subject.text,
+                    body.text,
+                    selectedColor!,
+                    selectedMention == "everyone" ? "everyone" : idMention.text,
+                    pushTokenMention.text
+                  );
                   Navigator.pop(context);
                 }
               },
@@ -266,11 +271,10 @@ class _CreateUpdateScreenState extends State<CreateUpdateScreen> {
                 child: const Text(
                   "Add Update",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Unna'
-                  ),
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Unna'),
                 ),
               ),
             )

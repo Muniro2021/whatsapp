@@ -36,7 +36,7 @@ class LeavesCard extends StatelessWidget {
                 DataCounter(
                   color: seconderyLightColor,
                   future:
-                      StatisticDataAPI.getUserHourlyLeaves(year, month, userId),
+                      StatisticDataAPI.getSpecificMonthlyLeaves(year, month, userId, "0"),
                 ),
                 const Text(
                   "Hourly",
@@ -60,7 +60,7 @@ class LeavesCard extends StatelessWidget {
                 ),
                 DataCounter(
                   color: seconderyLightColor,
-                  future: StatisticDataAPI.getUserSickLeaves(year, month, userId),
+                  future: StatisticDataAPI.getSpecificMonthlyLeaves(year, month, userId, "1"),
                 ),
                 const Text(
                   "Sick",
@@ -84,7 +84,7 @@ class LeavesCard extends StatelessWidget {
                 ),
                 DataCounter(
                   color: seconderyLightColor,
-                  future: StatisticDataAPI.getUserAnnualLeaves(year, month, userId),
+                  future: StatisticDataAPI.getSpecificMonthlyLeaves(year, month, userId, "2"),
                 ),
                 const Text(
                   "Annual",
@@ -108,7 +108,7 @@ class LeavesCard extends StatelessWidget {
                 ),
                 DataCounter(
                   color: seconderyLightColor,
-                  future: StatisticDataAPI.getUserUnpaidLeaves(year, month, userId),
+                  future: StatisticDataAPI.getSpecificMonthlyLeaves(year, month, userId, "3"),
                 ),
                 const Text(
                   "Unpaid",

@@ -18,6 +18,46 @@ class CustomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String deleteUserId = user.id;
+    List<PopupMenuEntry<String>> adminList = [
+      const PopupMenuItem<String>(
+        value: 'edit',
+        child: Text(
+          'Edit Profile',
+          style: TextStyle(fontFamily: 'Unna'),
+        ),
+      ),
+      const PopupMenuItem<String>(
+        value: 'delete',
+        child: Text(
+          'Delete Account',
+          style: TextStyle(fontFamily: 'Unna'),
+        ),
+      ),
+    ];
+    List<PopupMenuEntry<String>> userList = [
+      const PopupMenuItem<String>(
+        value: 'edit',
+        child: Text(
+          'Edit Profile',
+          style: TextStyle(fontFamily: 'Unna'),
+        ),
+      ),
+      const PopupMenuItem<String>(
+        value: 'delete',
+        child: Text(
+          'Delete Account',
+          style: TextStyle(fontFamily: 'Unna'),
+        ),
+      ),
+      const PopupMenuItem<String>(
+        value: 'logout',
+        child: Text(
+          'Logout',
+          style: TextStyle(fontFamily: 'Unna'),
+        ),
+      ),
+    ];
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -36,7 +76,7 @@ class CustomAppBar extends StatelessWidget {
                   color: whiteColor,
                 ),
               ),
-              user.id == APIs.me.id
+              user.id == APIs.me.id || APIs.me.role == 1
                   ? PopupMenuButton<String>(
                       color: whiteColor,
                       onSelected: (String value) async {
@@ -57,27 +97,24 @@ class CustomAppBar extends StatelessWidget {
                             desc: 'Are You Sure ?!',
                             btnCancelOnPress: () {},
                             btnOkOnPress: () async {
-                              await logoutFunc(context);
-                              await APIs.deleteUser(APIs.me.id);
-                              await APIs.auth.currentUser!.delete();
+                              await APIs.deleteUser(deleteUserId);
+                              user.id == APIs.me.id
+                                  ? await logoutFunc(context)
+                                  : Navigator.pop(context);
+                              user.id != APIs.me.id
+                                  ? Navigator.pop(context)
+                                  : null;
+                              // await APIs.auth.currentUser!.delete();
                             },
                           ).show();
                         }
                       },
-                      itemBuilder: (BuildContext context) => [
-                        const PopupMenuItem<String>(
-                          value: 'edit',
-                          child: Text('Edit Profile'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'delete',
-                          child: Text('Delete Account'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'logout',
-                          child: Text('Logout'),
-                        ),
-                      ],
+                      itemBuilder: (BuildContext context) =>
+                          user.id == APIs.me.id && APIs.me.role == 1
+                              ? userList
+                              : user.id != APIs.me.id && APIs.me.role == 1
+                                  ? adminList
+                                  : userList,
                     )
                   : const SizedBox(
                       width: 20,
@@ -92,6 +129,7 @@ class CustomAppBar extends StatelessWidget {
   Future<void> logoutFunc(BuildContext context) async {
     Dialogs.showProgressBar(context);
     await APIs.updateActiveStatus(false);
+    APIs.fMessaging.unsubscribeFromTopic('subscribtion');
     await APIs.auth.signOut().then((value) async {
       await GoogleSignIn().signOut().then((value) {
         Navigator.pop(context);

@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/features/admin_home_feature/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/admin_home_feature/widgets/chat_user_card.dart';
-import 'package:uct_chat/features/call_screen/call_screen.dart';
+import 'package:uct_chat/features/zego_cloud/video_screen.dart';
 import 'package:uct_chat/main.dart';
 import 'package:uct_chat/models/chat_user.dart';
 
@@ -63,6 +63,7 @@ class _AdminChatsTabState extends State<AdminChatsTab> {
             ),
             onTap: () {
               String callId = '';
+              String message = '';
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
@@ -80,28 +81,53 @@ class _AdminChatsTabState extends State<AdminChatsTab> {
                   title: const Row(
                     children: [
                       Icon(
-                        Icons.call_outlined,
+                        Icons.video_call,
                         color: Color(0xff008069),
                         size: 28,
                       ),
-                      Text('Add Call Id')
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text('Enter Info')
                     ],
                   ),
 
                   //content
-                  content: TextFormField(
-                    maxLines: null,
-                    onChanged: (value) => callId = value,
-                    decoration: InputDecoration(
-                      hintText: 'Call Id',
-                      prefixIcon: const Icon(
-                        Icons.call_outlined,
-                        color: Color(0xff008069),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        maxLines: null,
+                        onChanged: (value) => callId = value,
+                        decoration: InputDecoration(
+                          hintText: 'Call Id: ',
+                          prefixIcon: const Icon(
+                            Icons.call_outlined,
+                            color: Color(0xff008069),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ),
+                      TextFormField(
+                        maxLines: null,
+                        onChanged: (value) => message = value,
+                        decoration: InputDecoration(
+                          hintText: 'The Message: ',
+                          prefixIcon: const Icon(
+                            Icons.message,
+                            color: Color(0xff008069),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
                   //actions
@@ -126,11 +152,19 @@ class _AdminChatsTabState extends State<AdminChatsTab> {
                         //hide alert dialog
                         Navigator.pop(context);
                         if (callId.isNotEmpty) {
+                          String appId = await APIs.getZegoCloudAppId();
+                          String appSign = await APIs.getZegoCloudAppSign();
+                          APIs.sendTopicNotification(
+                            "The call id is: $callId",
+                            message,
+                          );
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => CallInvitationPage(
+                              builder: (_) => VideoInvitationPage(
                                 callId: callId,
+                                appId: appId,
+                                appSign: appSign,
                               ),
                             ),
                           );
@@ -230,12 +264,13 @@ class _AdminChatsTabState extends State<AdminChatsTab> {
                                       physics: const BouncingScrollPhysics(),
                                       itemBuilder: (context, index) {
                                         return ChatUserCard(
-                                            user: widget
-                                                    .homeScreenCubit.isSearching
-                                                ? widget.homeScreenCubit
-                                                    .searchList[index]
-                                                : widget.homeScreenCubit
-                                                    .list[index]);
+                                          user:
+                                              widget.homeScreenCubit.isSearching
+                                                  ? widget.homeScreenCubit
+                                                      .searchList[index]
+                                                  : widget.homeScreenCubit
+                                                      .list[index],
+                                        );
                                       });
                                 } else {
                                   return Center(

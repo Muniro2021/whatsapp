@@ -1,10 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/models/chat_user.dart';
 
-class UserDetails extends StatelessWidget {
+class UserDetails extends StatefulWidget {
   const UserDetails({
     super.key,
     required this.user,
@@ -13,15 +14,32 @@ class UserDetails extends StatelessWidget {
   final ChatUser user;
 
   @override
+  State<UserDetails> createState() => _UserDetailsState();
+}
+
+class _UserDetailsState extends State<UserDetails> {
+  late TextEditingController callIdController;
+  @override
+  void initState() {
+    callIdController = TextEditingController(text: '000');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    callIdController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(user.createdAt));
+    DateTime dateTime = DateTime.parse(widget.user.createdAt).toLocal();
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          user.name,
+          widget.user.name,
           style: const TextStyle(
             color: primaryLightColor,
             fontFamily: 'Unna',
@@ -40,7 +58,7 @@ class UserDetails extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            user.position,
+            widget.user.position,
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: whiteColor,
@@ -54,7 +72,7 @@ class UserDetails extends StatelessWidget {
           height: 10,
         ),
         Text(
-          user.email,
+          widget.user.email,
           style: const TextStyle(
             color: primaryLightColor,
             fontFamily: 'Unna',
@@ -90,14 +108,52 @@ class UserDetails extends StatelessWidget {
                 ),
               ],
             ),
-            user.id == APIs.me.id
-                ? const Text(
-                    "id: 8927631678361",
-                    style: TextStyle(
-                      color: primaryLightColor,
-                      fontFamily: 'Unna',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
+            widget.user.id == APIs.me.id || APIs.me.role == 1
+                ? InkWell(
+                    onTap: () {
+                      APIs.me.role == 1
+                          ? AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.noHeader,
+                              animType: AnimType.rightSlide,
+                              body: Container(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      controller: callIdController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        label: Text("callId"),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              btnOkOnPress: () async {
+                                await APIs.newUserCallId(
+                                  userId: widget.user.id,
+                                  newCallId: callIdController.text,
+                                );
+                                widget.user.callId = callIdController.text;
+                              },
+                            ).show()
+                          : null;
+                    },
+                    child: Text(
+                      "Call ID: ${widget.user.callId}",
+                      style: const TextStyle(
+                        color: primaryLightColor,
+                        fontFamily: 'Unna',
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   )
                 : const SizedBox.square(),

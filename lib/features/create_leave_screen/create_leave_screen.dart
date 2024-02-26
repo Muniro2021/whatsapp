@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:uct_chat/api/apis.dart';
+import 'package:uct_chat/features/create_update_screen/widgets/customdropdownsearch.dart';
 import 'package:uct_chat/helper/utils/constant.dart';
+import 'package:uct_chat/models/users_name.dart';
 
 class CreateLeaveScreen extends StatefulWidget {
   const CreateLeaveScreen({super.key});
@@ -23,7 +27,45 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
   @override
   void initState() {
     initValues();
+    adminPushToken = TextEditingController();
+    adminName = TextEditingController();
+    adminId = TextEditingController();
+    getUsers();
     super.initState();
+  }
+
+  List<UserModel> usersData = [];
+  List<DocumentSnapshot> snapUsersData = [];
+  List<SelectedListItem> dropdownlist = [];
+  late TextEditingController adminPushToken;
+  late TextEditingController adminName;
+  late TextEditingController adminId;
+  Future<Null> getUsers() async {
+    QuerySnapshot data = await APIs.firestore
+        .collection("users")
+        .where('role', isEqualTo: 1)
+        .get();
+    if (data.docs.isNotEmpty) {
+      snapUsersData.addAll(data.docs);
+      usersData = snapUsersData.map((e) => UserModel.fromFirestore(e)).toList();
+      for (int i = 0; i < usersData.length; i++) {
+        dropdownlist.add(
+          SelectedListItem(
+              name: usersData[i].name!,
+              value: usersData[i].pushToken,
+              id: usersData[i].id),
+        );
+      }
+    }
+    return null;
+  }
+
+  @override
+  void dispose() {
+    adminPushToken.dispose();
+    adminName.dispose();
+    adminId.dispose();
+    super.dispose();
   }
 
   @override
@@ -89,6 +131,16 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                   );
                 },
               ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomDropdownSearch(
+              dropdownSelectedPushToken: adminPushToken,
+              dropdownSelectedName: adminName,
+              dropdownSelectedId: adminId,
+              listdata: dropdownlist,
+              title: 'Admins',
             ),
             const SizedBox(
               height: 20,
@@ -260,16 +312,34 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
           false, // Set to true if you want to allow dismissing the dialog by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Leave Details', style: TextStyle(fontFamily: 'Unna'),),
+          title: const Text(
+            'Leave Details',
+            style: TextStyle(fontFamily: 'Unna'),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("From Date: ${selectedFromDate.toString().split(' ')[0]}", style: const TextStyle(fontFamily: 'Unna'),),
-              Text("To Date: ${selectedToDate.toString().split(' ')[0]}", style: const TextStyle(fontFamily: 'Unna'),),
-              Text("From Hour: ${selectedFromTime.format(context).toString()}", style: const TextStyle(fontFamily: 'Unna'),),
-              Text("To Hour: ${selectedToTime.format(context).toString()}", style: const TextStyle(fontFamily: 'Unna'),),
-              Text("Cause: ${controller.text}", style: const TextStyle(fontFamily: 'Unna'),),
+              Text(
+                "From Date: ${selectedFromDate.toString().split(' ')[0]}",
+                style: const TextStyle(fontFamily: 'Unna'),
+              ),
+              Text(
+                "To Date: ${selectedToDate.toString().split(' ')[0]}",
+                style: const TextStyle(fontFamily: 'Unna'),
+              ),
+              Text(
+                "From Hour: ${selectedFromTime.format(context).toString()}",
+                style: const TextStyle(fontFamily: 'Unna'),
+              ),
+              Text(
+                "To Hour: ${selectedToTime.format(context).toString()}",
+                style: const TextStyle(fontFamily: 'Unna'),
+              ),
+              Text(
+                "Cause: ${controller.text}",
+                style: const TextStyle(fontFamily: 'Unna'),
+              ),
               Text(
                 (() {
                   switch (selectedLeaveType) {
@@ -284,19 +354,26 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                     default:
                       return "";
                   }
-                })(), style: const TextStyle(fontFamily: 'Unna'),
+                })(),
+                style: const TextStyle(fontFamily: 'Unna'),
               ),
             ],
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close', style: TextStyle(fontFamily: 'Unna', color: primaryLightColor),),
+              child: const Text(
+                'Close',
+                style: TextStyle(fontFamily: 'Unna', color: primaryLightColor),
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: const Text('Submit', style: TextStyle(fontFamily: 'Unna', color: primaryLightColor),),
+              child: const Text(
+                'Submit',
+                style: TextStyle(fontFamily: 'Unna', color: primaryLightColor),
+              ),
               onPressed: () {
                 APIs.leaveApply(
                   selectedFromDate.toString().split(' ')[0],
@@ -305,6 +382,8 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
                   selectedToTime.format(context).toString(),
                   controller.text,
                   selectedLeaveType,
+                  adminPushToken.text,
+                  adminId.text
                 );
                 Navigator.pop(context);
                 Navigator.pop(context);

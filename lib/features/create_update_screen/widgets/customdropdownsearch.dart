@@ -7,12 +7,14 @@ class CustomDropdownSearch extends StatefulWidget {
   final String title;
   final List<SelectedListItem> listdata;
   final TextEditingController dropdownSelectedName;
+  final TextEditingController dropdownSelectedPushToken;
   final TextEditingController dropdownSelectedId;
   const CustomDropdownSearch({
     super.key,
     required this.title,
     required this.listdata,
     required this.dropdownSelectedName,
+    required this.dropdownSelectedPushToken, 
     required this.dropdownSelectedId,
   });
 
@@ -44,7 +46,8 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
         selectedItems: (List<dynamic> selectedList) {
           SelectedListItem selectedListItem = selectedList[0];
           widget.dropdownSelectedName.text = selectedListItem.name;
-          widget.dropdownSelectedId.text = selectedListItem.value!;
+          widget.dropdownSelectedPushToken.text = selectedListItem.value!;
+          widget.dropdownSelectedId.text = selectedListItem.id!;
         },
       ),
     ).showModal(context);

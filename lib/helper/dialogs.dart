@@ -6,9 +6,12 @@ class Dialogs {
   static void showSnackbar(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(msg),
-          backgroundColor: primaryLightColor.withOpacity(.8),
-          behavior: SnackBarBehavior.floating),
+        content: Text(msg),
+        backgroundColor: primaryLightColor.withOpacity(.8),
+        behavior: SnackBarBehavior.floating,
+        showCloseIcon: true,
+        
+      ),
     );
   }
 

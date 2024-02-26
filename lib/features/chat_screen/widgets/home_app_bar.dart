@@ -42,6 +42,7 @@ class HomeAppBar extends StatelessWidget {
                   child: CachedNetworkImage(
                     width: mq.height * .05,
                     height: mq.height * .05,
+                    fit: BoxFit.cover,
                     imageUrl: list.isNotEmpty ? list[0].image : user.image,
                     errorWidget: (context, url, error) => const CircleAvatar(
                       child: Icon(CupertinoIcons.person),

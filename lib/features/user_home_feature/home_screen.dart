@@ -4,12 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uct_chat/features/admin_statistics_feature/widgets/user_statistic.dart';
 import 'package:uct_chat/features/done_features/view_profile_feature/view_profile.dart';
 import 'package:uct_chat/features/user_home_feature/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/chats_tab.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/leaves_tab.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/updates_tab.dart';
-import 'package:uct_chat/features/user_statistics_feature/statistics.dart';
 import 'package:uct_chat/helper/utils/constant.dart';
 
 import '../../api/apis.dart';
@@ -86,8 +86,7 @@ class _UserHomeScreenState extends State<UserHomeScreen>
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) =>
-                              ViewProfile(user: APIs.me),
+                          builder: (context) => ViewProfile(user: APIs.me),
                         ),
                       );
                     },
@@ -106,7 +105,7 @@ class _UserHomeScreenState extends State<UserHomeScreen>
                       ),
                     ),
                   ),
-                 Image.asset(
+                  Image.asset(
                     'assets/images/UCT.gif',
                     height: 60,
                   ),
@@ -115,7 +114,10 @@ class _UserHomeScreenState extends State<UserHomeScreen>
                       if (value == 'user_statistics') {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const UserStatistic(),
+                            builder: (context) => UserStatisticFromAdmin(
+                              userId: APIs.me.id,
+                              username: APIs.me.name,
+                            ),
                           ),
                         );
                       }

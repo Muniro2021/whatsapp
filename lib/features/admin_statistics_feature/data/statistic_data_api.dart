@@ -4,8 +4,12 @@ import 'package:uct_chat/api/apis.dart';
 class StatisticDataAPI {
   static FirebaseFirestore myFirestore = APIs.firestore;
   // leaves statistics ------------------------
-  static Future<int> getUserHourlyLeaves(
-      String year, int month, String userId) async {
+
+  static Future<int> getAllMonthlyLeaves(
+    String year,
+    int month,
+    String userId,
+  ) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
         .collection('leaves')
         .doc(year)
@@ -14,13 +18,16 @@ class StatisticDataAPI {
         .collection('month_leaves')
         .doc(userId)
         .collection("my_leaves")
-        .where('leave_type', isEqualTo: "0")
         .get();
     return snapshot.docs.length;
   }
 
-  static Future<int> getUserSickLeaves(
-      String year, int month, String userId) async {
+  static Future<int> getSpecificMonthlyLeaves(
+    String year,
+    int month,
+    String userId,
+    String type,
+  ) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
         .collection('leaves')
         .doc(year)
@@ -29,58 +36,61 @@ class StatisticDataAPI {
         .collection('month_leaves')
         .doc(userId)
         .collection("my_leaves")
-        .where('leave_type', isEqualTo: "1")
+        .where('leave_type', isEqualTo: type)
         .get();
     return snapshot.docs.length;
   }
 
-  static Future<int> getUserAnnualLeaves(
-      String year, int month, String userId) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
-        .collection('leaves')
-        .doc(year)
-        .collection('year_leaves')
-        .doc(month.toString())
-        .collection('month_leaves')
-        .doc(userId)
-        .collection("my_leaves")
-        .where('leave_type', isEqualTo: "2")
-        .get();
-    return snapshot.docs.length;
+  static Future<int> getAllYearlyLeaves(
+    String year,
+    String userId,
+  ) async {
+    int totalLeaves = 0;
+    for (int i = 1; i <= 12; i++) {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
+          .collection('leaves')
+          .doc(year)
+          .collection('year_leaves')
+          .doc(i.toString())
+          .collection('month_leaves')
+          .doc(userId)
+          .collection("my_leaves")
+          .get();
+      totalLeaves += snapshot.docs.length;
+    }
+    return totalLeaves;
   }
 
-  static Future<int> getUserUnpaidLeaves(
-      String year, int month, String userId) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
-        .collection('leaves')
-        .doc(year)
-        .collection('year_leaves')
-        .doc(month.toString())
-        .collection('month_leaves')
-        .doc(userId)
-        .collection("my_leaves")
-        .where('leave_type', isEqualTo: "3")
-        .get();
-    return snapshot.docs.length;
+  static Future<int> getSpecificYearlyLeaves(
+    String year,
+    String userId,
+    String type,
+  ) async {
+    int totalLeaves = 0;
+    for (int i = 1; i <= 12; i++) {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
+          .collection('leaves')
+          .doc(year)
+          .collection('year_leaves')
+          .doc(i.toString())
+          .collection('month_leaves')
+          .doc(userId)
+          .collection("my_leaves")
+          .where('leave_type', isEqualTo: type)
+          .get();
+      totalLeaves += snapshot.docs.length;
+    }
+    return totalLeaves;
   }
-
-  static Future<int> getUserUpdatesCount(
-      String year, int month, String userId) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
-        .collection('updates')
-        .doc(year)
-        .collection('year_updates')
-        .doc(month.toString())
-        .collection('month_updates')
-        .doc(userId)
-        .collection("my_updates")
-        .get();
-    return snapshot.docs.length;
-  }
+  // ------------------------------------------------------------------
 
   // updates statistics ------------------------
-  static Future<int> getUserInfoUpdates(
-      String year, int month, String userId) async {
+
+  static Future<int> getAllMonthlyUpdates(
+    String year,
+    int month,
+    String userId,
+  ) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
         .collection('updates')
         .doc(year)
@@ -89,13 +99,16 @@ class StatisticDataAPI {
         .collection('month_updates')
         .doc(userId)
         .collection("my_updates")
-        .where('message_color', isEqualTo: "blue")
         .get();
     return snapshot.docs.length;
   }
 
-  static Future<int> getUserWarninigUpdates(
-      String year, int month, String userId) async {
+  static Future<int> getSpecificMonthlyUpdates(
+    String year,
+    int month,
+    String userId,
+    String type,
+  ) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
         .collection('updates')
         .doc(year)
@@ -104,40 +117,56 @@ class StatisticDataAPI {
         .collection('month_updates')
         .doc(userId)
         .collection("my_updates")
-        .where('message_color', isEqualTo: "orange")
+        .where('message_color', isEqualTo: type)
         .get();
     return snapshot.docs.length;
   }
 
-  static Future<int> getUserUrgentUpdates(
-      String year, int month, String userId) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
-        .collection('updates')
-        .doc(year)
-        .collection('year_updates')
-        .doc(month.toString())
-        .collection('month_updates')
-        .doc(userId)
-        .collection("my_updates")
-        .where('message_color', isEqualTo: "red")
-        .get();
-    return snapshot.docs.length;
+  static Future<int> getAllYearlyUpdates(
+    String year,
+    String userId,
+  ) async {
+    int totalUpdates = 0;
+    for (int i = 1; i <= 12; i++) {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
+          .collection('updates')
+          .doc(year)
+          .collection('year_updates')
+          .doc(i.toString())
+          .collection('month_updates')
+          .doc(userId)
+          .collection("my_leaves")
+          .get();
+      totalUpdates += snapshot.docs.length;
+    }
+    return totalUpdates;
   }
 
-  static Future<int> getUserGoodUpdates(
-      String year, int month, String userId) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
-        .collection('updates')
-        .doc(year)
-        .collection('year_updates')
-        .doc(month.toString())
-        .collection('month_updates')
-        .doc(userId)
-        .collection("my_updates")
-        .where('message_color', isEqualTo: "green")
-        .get();
-    return snapshot.docs.length;
+  static Future<int> getSpecificYearlyUpdates(
+    String year,
+    String userId,
+    String type,
+  ) async {
+    int totalUpdates = 0;
+    for (int i = 1; i <= 12; i++) {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await myFirestore
+          .collection('updates')
+          .doc(year)
+          .collection('year_updates')
+          .doc(i.toString())
+          .collection('month_updates')
+          .doc(userId)
+          .collection("my_leaves")
+          .where('message_color', isEqualTo: type)
+          .get();
+      totalUpdates += snapshot.docs.length;
+    }
+    return totalUpdates;
   }
+
+  // ------------------------------------------------------------------
+
+  // others statistics ------------------------
 
   static Future<String> getLeaveHours(
     String year,
@@ -161,11 +190,21 @@ class StatisticDataAPI {
       final leaveFromTime = documentSnapshot.data()['leave_from_time'];
       final leaveToDate = documentSnapshot.data()['leave_to_date'];
       final leaveToTime = documentSnapshot.data()['leave_to_time'];
+
+      // Convert leave dates and times to DateTime objects
       final leaveFrom = DateTime.parse('$leaveFromDate $leaveFromTime');
       final leaveTo = DateTime.parse('$leaveToDate $leaveToTime');
-      final leaveDuration = leaveTo.difference(leaveFrom);
+
+      // Get the local time
+      final localLeaveFrom = leaveFrom.toLocal();
+      final localLeaveTo = leaveTo.toLocal();
+
+      // Calculate leave duration
+      final leaveDuration = localLeaveTo.difference(localLeaveFrom);
       totalHours += leaveDuration;
     }
+
+    // Format the total leave duration
     final hours = (totalHours.inHours % 24).toString().padLeft(2, '0');
     final minutes = (totalHours.inMinutes % 60).toString().padLeft(2, '0');
     final totalFormatted = '$hours:$minutes';
@@ -249,9 +288,8 @@ class StatisticDataAPI {
 
     var x = sickDays + annualDays + unpaidDays;
 
-    final TotalFormatted = '$x';
+    final totalFormatted = '$x';
 
-    return TotalFormatted;
+    return totalFormatted;
   }
-  
 }

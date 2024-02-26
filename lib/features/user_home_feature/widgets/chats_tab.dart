@@ -1,9 +1,10 @@
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uct_chat/api/apis.dart';
-import 'package:uct_chat/features/call_screen/call_screen.dart';
+import 'package:uct_chat/features/zego_cloud/video_screen.dart';
 import 'package:uct_chat/features/user_home_feature/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/user_home_feature/widgets/chat_user_card.dart';
 import 'package:uct_chat/helper/dialogs.dart';
@@ -136,7 +137,6 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
               Expanded(
                 child: StreamBuilder(
                   stream: APIs.getMyUsersId(),
-
                   //get id of only known users
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
@@ -152,7 +152,6 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
                           stream: APIs.getAllUsers(
                               snapshot.data?.docs.map((e) => e.id).toList() ??
                                   []),
-
                           //get only those user, who's ids are provided
                           builder: (context, snapshot) {
                             switch (snapshot.connectionState) {
@@ -166,7 +165,6 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
                                             (e) => ChatUser.fromJson(e.data()))
                                         .toList() ??
                                     [];
-
                                 if (widget.homeScreenCubit.list.isNotEmpty) {
                                   return ListView.builder(
                                       itemCount: widget
@@ -178,13 +176,54 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
                                           EdgeInsets.only(top: mq.height * .01),
                                       physics: const BouncingScrollPhysics(),
                                       itemBuilder: (context, index) {
-                                        return ChatUserCard(
+                                        return Slidable(
+                                          key: ValueKey(
+                                            widget
+                                                .homeScreenCubit.list[index].id,
+                                          ),
+                                          startActionPane: ActionPane(
+                                            motion: const ScrollMotion(),
+                                            dismissible: DismissiblePane(
+                                                onDismissed: () {
+                                              APIs.deleteMyUser(widget
+                                                      .homeScreenCubit
+                                                      .list[index]
+                                                      .id)
+                                                  .then(
+                                                (value) => APIs.deleteChat(
+                                                  APIs.getConversationID(
+                                                    widget.homeScreenCubit
+                                                        .list[index].id,
+                                                  ),
+                                                ).then((value) =>
+                                                    Navigator.pop(context)),
+                                              );
+                                            }),
+                                            children: [
+                                              SlidableAction(
+                                                onPressed: (context) {
+                                                  APIs.deleteMyUser(widget
+                                                      .homeScreenCubit
+                                                      .list[index]
+                                                      .id);
+                                                },
+                                                backgroundColor:
+                                                    const Color(0xFFFE4A49),
+                                                foregroundColor: Colors.white,
+                                                icon: Icons.delete,
+                                                label: 'Delete',
+                                              ),
+                                            ],
+                                          ),
+                                          child: ChatUserCard(
                                             user: widget
                                                     .homeScreenCubit.isSearching
                                                 ? widget.homeScreenCubit
                                                     .searchList[index]
                                                 : widget.homeScreenCubit
-                                                    .list[index]);
+                                                    .list[index],
+                                          ),
+                                        );
                                       });
                                 } else {
                                   return Center(
@@ -268,11 +307,15 @@ class _UsersChatsTabState extends State<UsersChatsTab> {
               //hide alert dialog
               Navigator.pop(context);
               if (callId.isNotEmpty) {
+                String appId = await APIs.getZegoCloudAppId();
+                String appSign = await APIs.getZegoCloudAppSign();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => CallInvitationPage(
+                    builder: (_) => VideoInvitationPage(
                       callId: callId,
+                      appId: appId,
+                      appSign: appSign,
                     ),
                   ),
                 );

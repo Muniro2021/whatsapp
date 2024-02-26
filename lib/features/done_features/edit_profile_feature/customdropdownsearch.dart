@@ -1,7 +1,6 @@
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/helper/utils/constant.dart';
 
 class CustomDropdownSearch extends StatefulWidget {
@@ -9,8 +8,8 @@ class CustomDropdownSearch extends StatefulWidget {
   final List<SelectedListItem> listdata;
   final TextEditingController dropdownSelectedName;
   final TextEditingController dropdownSelectedId;
-  final String position;
-  const CustomDropdownSearch({
+  String position;
+  CustomDropdownSearch({
     super.key,
     required this.title,
     required this.listdata,
@@ -55,7 +54,7 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
   Widget build(BuildContext context) {
     return TextFormField(
       style: const TextStyle(fontFamily: 'Unna'),
-      onSaved: (val) => APIs.me.position = val ?? '',
+      onSaved: (val) => widget.position = val ?? '',
       validator: (val) =>
           val != null && val.isNotEmpty ? null : 'Required Field',
       controller: widget.dropdownSelectedName,
@@ -69,7 +68,7 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         label: const Text('Position'),
         labelStyle: const TextStyle(color: seconderyDarkColor),
-                hintText: widget.dropdownSelectedName.text == ""
+        hintText: widget.dropdownSelectedName.text == ""
             ? widget.title
             : widget.dropdownSelectedName.text,
       ),

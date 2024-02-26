@@ -1,7 +1,6 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:uct_chat/api/apis.dart';
-import 'package:uct_chat/features/done_features/view_profile_feature/widgets/rating_user.dart';
 import 'package:uct_chat/features/done_features/view_profile_feature/widgets/comunication.dart';
 import 'package:uct_chat/features/done_features/view_profile_feature/widgets/statistic.dart';
 import 'package:uct_chat/features/done_features/view_profile_feature/widgets/user_details.dart';
@@ -29,7 +28,9 @@ class _OtherDataState extends State<OtherData> {
         children: [
           widget.user.id == APIs.me.id
               ? const SizedBox.shrink()
-              : const Comunication(),
+              : Comunication(
+                  user: widget.user,
+                ),
           widget.user.id == APIs.me.id
               ? const SizedBox.shrink()
               : const Divider(
@@ -43,66 +44,34 @@ class _OtherDataState extends State<OtherData> {
           const Divider(
             height: 50,
           ),
-          InkWell(
-            onTap: () {
-              AwesomeDialog(
-                context: context,
-                dialogType: DialogType.noHeader,
-                animType: AnimType.rightSlide,
-                body: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      "Rate User",
-                      style: TextStyle(
-                        color: primaryLightColor,
-                        fontSize: 20,
-                        fontFamily: 'Unna',
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      height: 40,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView.builder(
-                        itemCount: 5,
-                        itemExtent: 50,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => InkWell(
-                          onTap: () {
-                            setState(() {
-                              selectedNumber = index + 1;
-                            });
-                            print(selectedNumber);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: selectedNumber == 0 ? primaryLightColor : seconderyLightColor,
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "${index + 1}",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: whiteColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                btnOkOnPress: () {
-                  APIs.me.rating = "$selectedNumber";
-                },
-              ).show();
-            },
-            child: RatingUser(rating: int.parse(widget.user.rating)),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 10,
+            ),
+            decoration: BoxDecoration(
+              color: primaryLightColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            alignment: Alignment.center,
+            child: RatingBar.builder(
+              initialRating: double.parse(widget.user.rating),
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: seconderyLightColor,
+              ),
+              onRatingUpdate: (rating) {
+                if (widget.user.role == 1 || APIs.me.role == 1) {
+                  widget.user.rating = rating.toString();
+                  APIs.updateRatingStatus(rating.toString(), widget.user.id);
+                }
+              },
+            ),
           ),
           const SizedBox(
             height: 25,

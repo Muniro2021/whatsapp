@@ -32,6 +32,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen>
     super.initState();
     APIs.getSelfInfo(1);
     viewMode();
+    
   }
 
   @override

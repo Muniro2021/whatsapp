@@ -96,6 +96,7 @@ class _UsersTypeState extends State<UsersType> {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
+      APIs.fMessaging.subscribeToTopic('subscribtion');
       // Once signed in, return the UserCredential
       return await APIs.auth.signInWithCredential(credential);
     } catch (e) {

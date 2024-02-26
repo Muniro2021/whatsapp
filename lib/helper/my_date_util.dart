@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 
 class MyDateUtil {
   // for getting formatted time from milliSecondsSinceEpochs String
-  static String getFormattedTime(
-      {required BuildContext context, required String time}) {
-    final date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+  static String getFormattedTime({
+    required BuildContext context,
+    required String time,
+  }) {
+    DateTime date = DateTime.parse(time).toLocal();
+    // final date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     return TimeOfDay.fromDateTime(date).format(context);
   }
 
   // for getting formatted time for sent & read
-  static String getMessageTime(
-      {required BuildContext context, required String time}) {
-    final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-    final DateTime now = DateTime.now();
+  static String getMessageTime({
+    required BuildContext context,
+    required String time,
+  }) {
+    DateTime sent = DateTime.parse(time).toLocal();
+    // final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    final DateTime now = DateTime.now().toUtc();
 
     final formattedTime = TimeOfDay.fromDateTime(sent).format(context);
     if (now.day == sent.day &&
@@ -31,8 +37,9 @@ class MyDateUtil {
       {required BuildContext context,
       required String time,
       bool showYear = false}) {
-    final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-    final DateTime now = DateTime.now();
+    DateTime sent = DateTime.parse(time).toLocal();
+    // final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    final DateTime now = DateTime.now().toUtc();
 
     if (now.day == sent.day &&
         now.month == sent.month &&
@@ -46,17 +53,17 @@ class MyDateUtil {
   }
 
   //get formatted last active time of user in chat screen
-  static String getLastActiveTime(
-      {required BuildContext context, required String lastActive}) {
-    final int i = int.tryParse(lastActive) ?? -1;
-
-    //if time is not available then return below statement
-    if (i == -1) return 'Last seen not available';
-
-    DateTime time = DateTime.fromMillisecondsSinceEpoch(i);
-    DateTime now = DateTime.now();
-
+  static String getLastActiveTime({
+    required BuildContext context,
+    required String lastActive,
+  }) {
+    print("lastActive: $lastActive");
+    DateTime time = DateTime.parse(lastActive).toLocal();
+    print("time: $time");
+    final DateTime now = DateTime.now().toLocal();
+    print("now: $now");
     String formattedTime = TimeOfDay.fromDateTime(time).format(context);
+    print("formattedTime: $formattedTime");
     if (time.day == now.day &&
         time.month == now.month &&
         time.year == time.year) {

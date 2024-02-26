@@ -47,6 +47,7 @@ class MultiFloatingButton extends StatelessWidget {
           onPress: () async {
             await APIs.auth.signOut();
             await GoogleSignIn().signOut();
+            APIs.fMessaging.unsubscribeFromTopic('subscribtion');
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (_) => const LoginScreen()),

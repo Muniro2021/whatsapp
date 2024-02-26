@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:intl/intl.dart';
 
 class RiveEx extends StatefulWidget {
   const RiveEx({super.key});
@@ -11,12 +12,25 @@ class RiveEx extends StatefulWidget {
 class _RiveExState extends State<RiveEx> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: RiveAnimation.network(
-          'https://cdn.rive.app/animations/car.riv',
-        ),
-      ),
+          child: InkWell(
+        onTap: () {
+          DateTime utcDateTime = DateTime.now().toUtc();
+          String utcDateTimeString = utcDateTime.toString();
+          print(utcDateTimeString);
+
+          DateTime localDateTime = DateTime.parse(utcDateTimeString).toLocal();
+          String localDateTimeString = localDateTime.toString();
+          print(localDateTimeString);
+
+          DateTime updatedDateTime =
+              localDateTime.add(const Duration(hours: 1));
+          String updatedDateTimeString = updatedDateTime.toString();
+          print(updatedDateTimeString);
+        },
+        child: const Text("data"),
+      )),
     );
   }
 }

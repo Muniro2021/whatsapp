@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:uct_chat/api/apis.dart';
 import 'package:uct_chat/models/leave_apply.dart';
 
@@ -23,7 +25,6 @@ class _LeaveCardState extends State<LeaveCard> {
       child: Card(
         child: SizedBox(
           height: isContentVisible ? null : 70,
-
           // padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -60,6 +61,9 @@ class _LeaveCardState extends State<LeaveCard> {
   }
 
   Container CardName() {
+    final dateTime = DateTime.parse(widget.leave.time).toLocal();
+    final formattedDate = DateFormat('MMMM d, EEEE').format(dateTime);
+    final formattedTime = DateFormat('HH:mm').format(dateTime);
     return Container(
       width: double.infinity,
       height: 70,
@@ -78,9 +82,71 @@ class _LeaveCardState extends State<LeaveCard> {
           }
         })(),
       ),
-      child: Text(
-        "@${widget.leave.name}",
-        style: const TextStyle(height: 1, fontFamily: 'Unna'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Icon(Icons.)
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  FaIcon(
+                    (() {
+                      switch (widget.leave.status) {
+                        case "0":
+                          return FontAwesomeIcons.spinner;
+                        case "1":
+                          return FontAwesomeIcons.circleCheck;
+                        default:
+                          return FontAwesomeIcons.ban;
+                      }
+                    })(),
+                    color: (() {
+                      switch (widget.leave.status) {
+                        case "0":
+                          return Colors.blue;
+                        case "1":
+                          return Colors.green;
+                        default:
+                          return Colors.red;
+                      }
+                    })(),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "@${widget.leave.name}",
+                        style: const TextStyle(height: 1, fontFamily: 'Unna'),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        formattedDate,
+                        style: const TextStyle(height: 1, fontFamily: 'Unna'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                formattedTime,
+                style: const TextStyle(height: 1, fontFamily: 'Unna'),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

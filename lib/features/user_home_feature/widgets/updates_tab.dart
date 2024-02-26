@@ -127,11 +127,11 @@ class _UpdateAlertState extends State<UpdateAlert> {
   bool isContentVisible = false;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
       child: Card(
         child: SizedBox(
-          height: isContentVisible ? null : 60,
+          height: isContentVisible ? null : 70,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,13 +239,13 @@ class ContainerBoxTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    final dateTime = DateTime.parse(time).toLocal();
     final formattedDate = DateFormat('MMMM d, EEEE').format(dateTime);
     final formattedTime = DateFormat('HH:mm').format(dateTime);
     return Container(
       padding: const EdgeInsets.all(5),
       width: double.infinity,
-      height: 60,
+      height: 70,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.3),

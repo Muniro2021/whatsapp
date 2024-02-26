@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uct_chat/api/apis.dart';
-import 'package:uct_chat/features/call_screen/call_screen.dart';
+import 'package:uct_chat/features/zego_cloud/video_screen.dart';
 import 'package:uct_chat/features/home_screen/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/home_screen/widgets/chat_user_card.dart';
 import 'package:uct_chat/helper/dialogs.dart';
@@ -129,14 +129,18 @@ class _ChatsTabState extends State<ChatsTab> {
                               //hide alert dialog
                               Navigator.pop(context);
                               if (callId.isNotEmpty) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => CallInvitationPage(
-                                      callId: callId,
-                                    ),
-                                  ),
-                                );
+                                String appId = await APIs.getZegoCloudAppId();
+                          String appSign = await APIs.getZegoCloudAppSign();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VideoInvitationPage(
+                                callId: callId,
+                                appId: appId,
+                                appSign: appSign,
+                              ),
+                            ),
+                          );
                               }
                             },
                             child: const Text(
@@ -222,14 +226,18 @@ class _ChatsTabState extends State<ChatsTab> {
                                   //hide alert dialog
                                   Navigator.pop(context);
                                   if (callId.isNotEmpty) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => CallInvitationPage(
-                                          callId: callId,
-                                        ),
-                                      ),
-                                    );
+                                    String appId = await APIs.getZegoCloudAppId();
+                          String appSign = await APIs.getZegoCloudAppSign();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VideoInvitationPage(
+                                callId: callId,
+                                appId: appId,
+                                appSign: appSign,
+                              ),
+                            ),
+                          );
                                   }
                                 },
                                 child: const Text(

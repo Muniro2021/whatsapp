@@ -4,31 +4,29 @@ import 'package:uct_chat/api/apis.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
-class CallInvitationPage extends StatelessWidget {
-  const CallInvitationPage({
-    super.key,
-    required this.callId,
-  });
+class AudioInvitationPage extends StatelessWidget {
+  const AudioInvitationPage({super.key, required this.callId, required this.appId, required this.appSign});
   final String callId;
+  final String appId;
+  final String appSign;
 
   @override
   Widget build(BuildContext context) {
     return ZegoUIKitPrebuiltCall(
-      appID: 1134576799,
+      appID:int.parse(appId),
       appSign:
-          "387466bb25fc8e377322e819b0f9e28eae83328d5375ca26b179eba7d1ed9d8c",
+          appSign,
       userID: APIs.me.email,
       userName: APIs.me.name,
       plugins: [ZegoUIKitSignalingPlugin()],
       callID: callId,
-      config: ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+      config: ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
 
         /// support minimizing
         ..topMenuBarConfig.isVisible = true
         ..topMenuBarConfig.buttons = [
           ZegoMenuBarButtonName.minimizingButton,
           ZegoMenuBarButtonName.showMemberListButton,
-          ZegoMenuBarButtonName.beautyEffectButton,
         ]
         ..avatarBuilder = customAvatarBuilder,
       // You can also use groupVideo/groupVoice/oneOnOneVoice to make more types of calls.

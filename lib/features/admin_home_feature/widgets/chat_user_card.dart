@@ -73,13 +73,19 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 ),
 
                 //user name
-                title: Text(
-                  widget.user.name,
-                  style: const TextStyle(
-                    fontFamily: 'Unna',
-                  ),
-                ),
-
+                title: widget.user.id == APIs.me.id
+                    ? const Text(
+                        "Saved Messages",
+                        style: TextStyle(
+                          fontFamily: 'Unna',
+                        ),
+                      )
+                    : Text(
+                        widget.user.name,
+                        style: const TextStyle(
+                          fontFamily: 'Unna',
+                        ),
+                      ),
                 //last message
                 subtitle: Text(
                   _message != null

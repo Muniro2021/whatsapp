@@ -1,11 +1,12 @@
 import 'dart:developer';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:uct_chat/features/chat_screen/widgets/pdf_viewer.dart';
+import 'package:uct_chat/features/chat_screen/widgets/document_message.dart';
 import 'package:uct_chat/helper/image_viewer.dart';
 import 'package:uct_chat/helper/utils/constant.dart';
 import 'package:uct_chat/models/chat_user.dart';
@@ -257,26 +258,27 @@ class _MessageCardState extends State<MessageCard> {
                             ],
                           )
                         : widget.message.type == Type.doc
-                            ? SizedBox(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => PDFScreen(
-                                          pathPDF: (widget.message.msg)
-                                              .split('?')[0],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    "Document/Pdf File",
-                                    style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ),
-                              )
+                            ?  Card(child: DocumentMessage(url: widget.message.msg),)
+                            // SizedBox(
+                            //     child: InkWell(
+                            //       onTap: () {
+                            //         Navigator.of(context).push(
+                            //           MaterialPageRoute(
+                            //             builder: (_) => PDFScreen(
+                            //               pathPDF: (widget.message.msg)
+                            //                   .split('?')[0],
+                            //             ),
+                            //           ),
+                            //         );
+                            //       },
+                            //       child: const Text(
+                            //         "Document/Pdf File",
+                            //         style: TextStyle(
+                            //           decoration: TextDecoration.underline,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   )
                             : AspectRatio(
                                 aspectRatio: videoController.value.aspectRatio,
                                 child: Stack(
@@ -516,28 +518,30 @@ class _MessageCardState extends State<MessageCard> {
                             ],
                           )
                         : widget.message.type == Type.doc
-                            ? SizedBox(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => PDFScreen(
-                                          pathPDF: (widget.message.msg)
-                                              .split('?')[0],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Document/Pdf File',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ),
-                              )
+                            ?
+                            Card(child: DocumentMessage(url: widget.message.msg),)
+                            //  SizedBox(
+                            //     child: InkWell(
+                            //       onTap: () {
+                            //         Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //             builder: (context) => PDFScreen(
+                            //               pathPDF: (widget.message.msg)
+                            //                   .split('?')[0],
+                            //             ),
+                            //           ),
+                            //         );
+                            //       },
+                            //       child: const Text(
+                            //         'Document/Pdf File',
+                            //         style: TextStyle(
+                            //           color: Colors.white,
+                            //           decoration: TextDecoration.underline,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   )
                             : AspectRatio(
                                 aspectRatio: videoController.value.aspectRatio,
                                 child: Stack(
@@ -635,16 +639,20 @@ class _MessageCardState extends State<MessageCard> {
                               name: 'Download Audio',
                               onTap: () async {
                                 try {
-                                  log('Audio Url: ${widget.message.msg}');
-                                  await GallerySaver.downloadFile(
-                                    widget.message.msg,
-                                    // albumName: 'Audios Chat',
-                                  ).then((success) {
-                                    //for hiding bottom sheet
-                                    Navigator.pop(context);
-                                    Dialogs.showSnackbar(context,
-                                        'Audio Successfully Downloaded!');
-                                  });
+                                  AwesomeDialog(
+                                    context: context,
+                                    title: 'Commimg soon..',
+                                  ).show();
+                                  // log('Audio Url: ${widget.message.msg}');
+                                  // await GallerySaver.downloadFile(
+                                  //   widget.message.msg,
+                                  //   // albumName: 'Audios Chat',
+                                  // ).then((success) {
+                                  //   //for hiding bottom sheet
+                                  //   Navigator.pop(context);
+                                  //   Dialogs.showSnackbar(context,
+                                  //       'Audio Successfully Downloaded!');
+                                  // });
                                 } catch (e) {
                                   log('ErrorWhileSavingAudio: $e');
                                 }
@@ -659,18 +667,22 @@ class _MessageCardState extends State<MessageCard> {
                                   name: 'Download Document',
                                   onTap: () async {
                                     try {
-                                      log('Document Url: ${widget.message.msg}');
-                                      await GallerySaver.downloadFile(
-                                        widget.message.msg,
-                                        // albumName: 'Documents Chat',
-                                      ).then((success) {
-                                        //for hiding bottom sheet
-                                        Navigator.pop(context);
-                                        Dialogs.showSnackbar(
-                                          context,
-                                          'Doc Successfully Downloaded!',
-                                        );
-                                      });
+                                      AwesomeDialog(
+                                        context: context,
+                                        title: 'Commimg soon..',
+                                      ).show();
+                                      // log('Document Url: ${widget.message.msg}');
+                                      // GallerySaver.downloadFile(
+                                      //   widget.message.msg,
+                                      //   // albumName: 'Docs Chat',
+                                      // ).then((success) {
+                                      //   //for hiding bottom sheet
+                                      //   Navigator.pop(context);
+                                      //   Dialogs.showSnackbar(
+                                      //     context,
+                                      //     'Doc Successfully Downloaded!',
+                                      //   );
+                                      // });
                                     } catch (e) {
                                       log('ErrorWhileSavingDoc: $e');
                                     }
@@ -713,7 +725,8 @@ class _MessageCardState extends State<MessageCard> {
               //edit option
               if (widget.message.type == Type.text && isMe)
                 _OptionItem(
-                    icon: const Icon(Icons.edit, color: primaryLightColor, size: 26),
+                    icon: const Icon(Icons.edit,
+                        color: primaryLightColor, size: 26),
                     name: 'Edit Message',
                     onTap: () {
                       //for hiding bottom sheet
@@ -744,7 +757,8 @@ class _MessageCardState extends State<MessageCard> {
 
               //sent time
               _OptionItem(
-                  icon: const Icon(Icons.remove_red_eye, color: primaryLightColor),
+                  icon: const Icon(Icons.remove_red_eye,
+                      color: primaryLightColor),
                   name:
                       'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
@@ -760,6 +774,18 @@ class _MessageCardState extends State<MessageCard> {
           );
         });
   }
+
+  // Future<void> _downloadFile(
+  //     {required String url, required String fileName}) async {
+  //   final savedDir = await getExternalStorageDirectory();
+  //   final taskId = await FlutterDownloader.enqueue(
+  //     url: url,
+  //     savedDir: savedDir!.path,
+  //     fileName: fileName,
+  //     showNotification: true,
+  //     openFileFromNotification: true,
+  //   );
+  // }
 
   //dialog for updating message content
   void _showMessageUpdateDialog() {

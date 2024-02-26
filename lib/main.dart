@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:uct_chat/features/admin_home_feature/cubit/home_screen_cubit.dart';
 import 'package:uct_chat/features/chat_screen/cubit/chat_screen_cubit.dart';
+import 'package:uct_chat/features/create_update_screen/create_update_screen.dart';
 import 'package:uct_chat/features/login_feature/cubit/login_screen_cubit.dart';
-import 'package:uct_chat/features/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:uct_chat/features/splash_screen/splash_screen.dart';
 import 'package:uct_chat/features/user_home_feature/cubit/home_screen_cubit.dart';
 import 'firebase_options.dart';
 
 //global object for accessing device screen size
 late Size mq;
-void main() {
+final navigatorKey = GlobalKey<NavigatorState>();
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //enter full-screen
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  await FlutterDownloader.initialize(
+      debug: true // Set it to false in release mode
+      );
   //for setting orientation to portrait only
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -48,6 +54,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'UCT Chat',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -64,6 +71,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: const SplashScreen(),
+        routes: {
+          CreateUpdateScreen.route: (context) => const CreateUpdateScreen()
+        },
       ),
     );
   }
@@ -76,17 +86,28 @@ _initializeFirebase() async {
     id: 'chats',
     importance: NotificationImportance.IMPORTANCE_HIGH,
     name: 'Chats',
+    allowBubbles: true,
+    enableSound: true,
+    enableVibration: true,
   );
   await FlutterNotificationChannel.registerNotificationChannel(
     description: 'For Showing Updates Message Notification',
     id: 'updates',
     importance: NotificationImportance.IMPORTANCE_HIGH,
     name: 'Updates',
+    allowBubbles: true,
+    enableSound: true,
+    enableVibration: true,
   );
   await FlutterNotificationChannel.registerNotificationChannel(
     description: 'For Showing Leaves Message Notification',
     id: 'leaves',
     importance: NotificationImportance.IMPORTANCE_HIGH,
     name: 'Leaves',
+    allowBubbles: true,
+    enableSound: true,
+    enableVibration: true,
   );
+  // APIsMessage.initPushNotification();
+  // APIsMessage.initLocalNotifications();
 }
